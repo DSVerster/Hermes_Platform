@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Parcel;
 
 class ParcelSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class ParcelSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Parcel::factory(250)->create();
     }
 }

@@ -7,18 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::create('couriers', function (Blueprint $table) {
-            $table->id('courier_id');
-            $table->string('name');
-            $table->string('contact_number')->nullable();
-            $table->string('email')->nullable();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('couriers', function (Blueprint $table) {
+        $table->id('courier_id');
+        $table->string('name');
+        $table->text('description')->nullable();
+        $table->string('contact_person')->nullable();
+        $table->string('contact_number')->nullable();
+        $table->string('email')->nullable();
+        $table->string('website')->nullable();
+        $table->timestamps();
+    });
+}
 
-    public function down(): void
-    {
-        Schema::dropIfExists('couriers');
-    }
+public function down(): void
+{
+    Schema::dropIfExists('couriers');
+}
+
 };
