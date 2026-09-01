@@ -10,14 +10,14 @@ class StaffSeeder extends Seeder
     public function run(): void
     {
         $team = [
-            ['name' => 'DS', 'surname' => 'Verster', 'role' => 'Manager'],
-            ['name' => 'A', 'surname' => 'Ismail', 'role' => 'front_desk'],
-            ['name' => 'S', 'surname' => 'Scwebu', 'role' => 'front_desk'],
-            ['name' => 'A', 'surname' => 'Aswat', 'role' => 'front_desk'],
-            ['name' => 'J', 'surname' => 'Burger', 'role' => 'Warehouse'],
-            ['name' => 'D', 'surname' => 'Msibi', 'role' => 'Warehouse'],
-            ['name' => 'L', 'surname' => 'Marange', 'role' => 'Warehouse'],
-            ['name' => 'C', 'surname' => 'Goeminne', 'role' => 'Admin'],
+            ['name' => 'DS', 'surname' => 'Verster', 'role' => 'Admin'],
+            ['name' => 'A', 'surname' => 'Ismail', 'role' => 'Front_Desk'],
+            ['name' => 'S', 'surname' => 'Scwebu', 'role' => 'Manager'],
+            ['name' => 'A', 'surname' => 'Aswat', 'role' => 'Front_Desk'],
+            ['name' => 'J', 'surname' => 'Burger', 'role' => 'Manager'],
+            ['name' => 'D', 'surname' => 'Msibi', 'role' => 'Front_Desk'],
+            ['name' => 'L', 'surname' => 'Marange', 'role' => 'Front_Desk'],
+            ['name' => 'C', 'surname' => 'Goeminne', 'role' => 'Manager'],
         ];
 
         foreach ($team as $member) {

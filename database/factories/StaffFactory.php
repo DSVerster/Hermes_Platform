@@ -16,7 +16,7 @@ class StaffFactory extends Factory
     return [
         'name' => fake()->firstName(),
         'surname' => fake()->lastName(),
-        'role' => fake()->randomElement(['front_desk', 'Admin','Manager','Warehouse']),
+        'role' => fake()->randomElement(['Front_Desk', 'Admin','Manager']),
         'email_account' => fake()->unique()->safeEmail(),
         'password_hash' => bcrypt('password'),
     ];
