@@ -22,9 +22,9 @@ class ParcelFactory extends Factory
         'staff_id' => Staff::inRandomOrder()->first()?->staff_id ?? Staff::factory(),
         'recipient_name' => fake()->name(),
         'recipient_phone' => fake()->phoneNumber(),
-        'tracking_label' => strtoupper(fake()->unique()->bothify('HP-########')),
+        'tracking_number' => strtoupper(fake()->unique()->bothify('HP-########')),
         'parcel_type' => fake()->randomElement(['box', 'envelope', 'bag', 'tube']),
-        'courier_service' => fake()->randomElement(['DHL', 'CourierGuy', 'Aramex', 'PostNet']),
+        'courier_service' => fake()->randomElement(['DHL', 'CourierGuy', 'Aramex', 'PostNet', 'Takealot'),
         'date_received' => $received,
         'date_collected' => $status === 'collected'
             ? fake()->dateTimeBetween($received, 'now')
