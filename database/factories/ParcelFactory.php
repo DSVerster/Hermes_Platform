@@ -24,7 +24,7 @@ class ParcelFactory extends Factory
         'recipient_phone' => fake()->phoneNumber(),
         'tracking_number' => strtoupper(fake()->unique()->bothify('HP-########')),
         'parcel_type' => fake()->randomElement(['box', 'envelope', 'bag', 'tube']),
-        'courier_service' => fake()->randomElement(['DHL', 'CourierGuy', 'Aramex', 'PostNet', 'Takealot'),
+        'courier_service' => fake()->randomElement(['DHL', 'CourierGuy', 'Aramex', 'PostNet', 'Takealot']),
         'date_received' => $received,
         'date_collected' => $status === 'collected'
             ? fake()->dateTimeBetween($received, 'now')
