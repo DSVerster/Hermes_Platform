@@ -1,17 +1,32 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Http\Controllers\ParcelController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// Public Welcome Landing Page
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+// Authenticated & Verified Dashboard Access Routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+
+    // Core Parcel Workspace Stream
+    Route::get('dashboard', [ParcelController::class, 'index'])->name('dashboard');
+
+    // Backend API Logic Handlers
+    Route::post('parcels', [ParcelController::class, 'store'])->name('parcels.store');
+    Route::patch('parcels/{id}/status', [ParcelController::class, 'updateStatus'])->name('parcels.updateStatus');
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+// CRUCIAL: Do not forget to include these files or login/settings will stop working!
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
