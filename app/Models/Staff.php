@@ -14,7 +14,11 @@ class Staff extends Authenticatable
     protected $primaryKey = 'staff_id';
 
     protected $fillable = [
-        'name', 'surname', 'role', 'email_account', 'password_hash',
+        'name',
+        'surname',
+        'role',
+        'email_account',
+        'password_hash',
     ];
 
     protected $hidden = ['password_hash', 'remember_token'];
@@ -26,5 +30,11 @@ class Staff extends Authenticatable
     public function parcels(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Parcel::class, 'staff_id', 'staff_id');
+    }
+
+
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
     }
 }
