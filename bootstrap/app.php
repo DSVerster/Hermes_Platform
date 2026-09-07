@@ -16,10 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
-        // BYPASS CSRF FOR THUNDER CLIENT ISOLATED TESTS
-        $middleware->validateCsrfTokens(except: [
-            'api-test/*',
-        ]);
 
         $middleware->web(append: [
             HandleAppearance::class,
