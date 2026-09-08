@@ -10,7 +10,7 @@ use Inertia\Inertia;
 class StaffController extends Controller
 {
     /**
-     * Display a listing of staff.
+     * Display all staff members.
      */
     public function index(Request $request)
     {
@@ -18,17 +18,17 @@ class StaffController extends Controller
 
         if ($request->wantsJson()) {
             return response()->json([
-                'staff' => $staff
+                'staff' => $staff,
             ]);
         }
 
-        return Inertia::render('Staff/Index', [
-            'staff' => $staff
+        return Inertia::render('Dashboard', [
+            'staff' => $staff,
         ]);
     }
 
     /**
-     * Store a newly created staff member.
+     * Store a new staff member.
      */
     public function store(Request $request)
     {
@@ -40,27 +40,28 @@ class StaffController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // REMOVED manual Hash::make because Staff model automatically hashes password_hash field via casts
         $staff = Staff::create([
             'name' => $validated['name'],
             'surname' => $validated['surname'],
             'role' => $validated['role'],
             'email_account' => $validated['email_account'],
-            'password_hash' => $validated['password'],
+            'password_hash' => Hash::make($validated['password']),
         ]);
 
         if ($request->wantsJson()) {
             return response()->json([
                 'message' => 'Staff member created successfully.',
-                'staff' => $staff
+                'staff' => $staff,
             ], 201);
         }
 
-        return redirect()->back()->with('success', 'Staff member created successfully.');
+        return redirect()
+            ->back()
+            ->with('success', 'Staff member created successfully.');
     }
 
     /**
-     * Display a specific staff member.
+     * Display one staff member.
      */
     public function show(Request $request, $id)
     {
@@ -68,12 +69,12 @@ class StaffController extends Controller
 
         if ($request->wantsJson()) {
             return response()->json([
-                'staff' => $staff
+                'staff' => $staff,
             ]);
         }
 
         return Inertia::render('Staff/Show', [
-            'staff' => $staff
+            'staff' => $staff,
         ]);
     }
 
@@ -85,21 +86,23 @@ class StaffController extends Controller
         $staff = Staff::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'surname' => 'sometimes|required|string|max:255',
-            'role' => 'sometimes|required|string|max:100',
-            'email_account' => 'sometimes|required|email|max:255|unique:staff,email_account,' . $id . ',staff_id',
+            'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
+            'role' => 'required|string|max:100',
+            'email_account' => 'required|email|max:255|unique:staff,email_account,' . $id . ',staff_id',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        $staff->name = $validated['name'] ?? $staff->name;
-        $staff->surname = $validated['surname'] ?? $staff->surname;
-        $staff->role = $validated['role'] ?? $staff->role;
-        $staff->email_account = $validated['email_account'] ?? $staff->email_account;
+        $staff->name = $validated['name'];
+        $staff->surname = $validated['surname'];
+        $staff->role = $validated['role'];
+        $staff->email_account = $validated['email_account'];
 
+        /*
+         * Only change the password when a new password was entered.
+         */
         if (!empty($validated['password'])) {
-            // REMOVED manual Hash::make here as well to prevent double-hashing
-            $staff->password_hash = $validated['password'];
+            $staff->password_hash = Hash::make($validated['password']);
         }
 
         $staff->save();
@@ -107,11 +110,13 @@ class StaffController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'message' => 'Staff member updated successfully.',
-                'staff' => $staff
+                'staff' => $staff,
             ]);
         }
 
-        return redirect()->back()->with('success', 'Staff member updated successfully.');
+        return redirect()
+            ->back()
+            ->with('success', 'Staff member updated successfully.');
     }
 
     /**
@@ -120,14 +125,17 @@ class StaffController extends Controller
     public function destroy(Request $request, $id)
     {
         $staff = Staff::findOrFail($id);
+
         $staff->delete();
 
         if ($request->wantsJson()) {
             return response()->json([
-                'message' => 'Staff member deleted successfully.'
+                'message' => 'Staff member deleted successfully.',
             ]);
         }
 
-        return redirect()->back()->with('success', 'Staff member deleted successfully.');
+        return redirect()
+            ->back()
+            ->with('success', 'Staff member deleted successfully.');
     }
 }
