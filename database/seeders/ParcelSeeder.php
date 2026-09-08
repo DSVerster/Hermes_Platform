@@ -2,17 +2,29 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Parcel;
+use Illuminate\Database\Seeder;
 
 class ParcelSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Parcel::factory(100)->create();
+        Parcel::create([
+            'tracking_number' => 'HER-2026-001',
+            'status' => 'received',
+            'received_at' => now(),
+        ]);
+        
+        Parcel::create([
+            'tracking_number' => 'HER-2026-002',
+            'status' => 'ready_for_collection',
+            'received_at' => now()->subDay(),
+        ]);
+        
+        Parcel::create([
+            'tracking_number' => 'HER-2026-003',
+            'status' => 'collected',
+            'received_at' => now()->subDays(2),
+        ]);
     }
 }

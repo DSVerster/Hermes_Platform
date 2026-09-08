@@ -2,24 +2,23 @@
 
 namespace Database\Factories;
 
-use App\Models\Notification;
-use App\Models\Parcel;
+use App\Models\Staff;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Notification>
+ * @extends Factory<Staff>
  */
 class StaffFactory extends Factory
 {
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
-{
-    return [
-        'name' => fake()->firstName(),
-        'surname' => fake()->lastName(),
-        'role' => fake()->randomElement(['Front_Desk', 'Admin','Manager']),
-        'email_account' => fake()->unique()->safeEmail(),
-        'password_hash' => bcrypt('password'),
-    ];
-}
-    
+    {
+        return [
+            //
+        ];
+    }
 }
