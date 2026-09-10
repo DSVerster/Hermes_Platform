@@ -9,8 +9,13 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
+<<<<<<< HEAD
         web: __DIR__ . '/../routes/web.php',
         commands: __DIR__ . '/../routes/console.php',
+=======
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -22,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
     })
+<<<<<<< HEAD
 
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [
@@ -32,6 +38,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
 
 
+=======
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

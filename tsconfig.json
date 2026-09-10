@@ -107,6 +107,10 @@
         /* Completeness */
         // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
         "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+<<<<<<< HEAD
+=======
+        "baseUrl": ".",
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
         "paths": {
             "@/*": ["./resources/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]

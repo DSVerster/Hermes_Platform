@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -45,3 +46,14 @@ class Parcel extends Model
         return $this->belongsTo(Staff::class, 'staff_id', 'staff_id');
     }
 }
+=======
+
+class Parcel extends Model
+{
+    protected $fillable = [
+        'tracking_number',
+        'status',
+        'received_at',
+    ];
+}
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f

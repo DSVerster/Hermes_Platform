@@ -7,10 +7,15 @@ export default function Welcome() {
     return (
         <>
             <Head title="Hermes Platform">
+<<<<<<< HEAD
                 <link rel="preconnect" href="https://bunny.net" />
                 {/* After: Correct Bunny Fonts endpoint */}
                 <link href="https://fonts.bunny.net/css?family=fraunces:400,500,600|public-sans:400,500,600" rel="stylesheet" />
 
+=======
+                <link rel="preconnect" href="https://fonts.bunny.net" />
+                <link href="https://fonts.bunny.net/css?family=fraunces:400,500,600|public-sans:400,500,600" rel="stylesheet" />
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
             </Head>
 
             <div className="min-h-screen bg-[#f8f6fb] [font-family:'Public_Sans',sans-serif]">
@@ -24,8 +29,12 @@ export default function Welcome() {
                             </span>
                         </Link>
                         <div className="flex shrink-0 items-center gap-4 text-sm sm:gap-6">
+<<<<<<< HEAD
                             {/* FIX: Added optional chaining here */}
                             {auth?.user ? (
+=======
+                            {auth.user ? (
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
                                 <Link
                                     href={route('dashboard')}
                                     className="rounded-full bg-[#2d1b4e] px-5 py-2 font-medium whitespace-nowrap text-white transition-colors hover:bg-[#241541]"
@@ -70,8 +79,12 @@ export default function Welcome() {
                                 on. Log a parcel once, and follow it from drop-off to collection.
                             </p>
                             <div className="mt-9 flex flex-wrap items-center gap-4">
+<<<<<<< HEAD
                                 {/* FIX: Added optional chaining here */}
                                 {auth?.user ? (
+=======
+                                {auth.user ? (
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
                                     <Link
                                         href={route('dashboard')}
                                         className="rounded-full bg-[#f5a623] px-6 py-3 text-sm font-semibold text-[#2d1b4e] transition-colors hover:bg-[#e09520]"

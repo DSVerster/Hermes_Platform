@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Parcel;
+<<<<<<< HEAD
 use App\Models\Courier;
 use App\Models\Staff;
 use Inertia\Inertia;
@@ -20,10 +21,21 @@ class ParcelController extends Controller
 
         $couriers = Courier::all(['courier_id', 'name']);
         $staffs = Staff::all(['staff_id', 'name', 'surname']);
+=======
+use Inertia\Inertia;
+
+class ParcelController extends Controller
+{
+    public function index()
+    {
+        $parcels = Parcel::orderBy('received_at', 'desc')
+            ->get(['id', 'tracking_number', 'status']);
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
 
         return Inertia::render('Parcels/Index', [
             'title' => 'Parcels',
             'parcels' => $parcels,
+<<<<<<< HEAD
             'couriers' => $couriers,
             'staffs' => $staffs,
         ]);
@@ -55,10 +67,16 @@ class ParcelController extends Controller
     /**
      * Display detailed data for a singular parcel record.
      */
+=======
+        ]);
+    }
+
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
     public function show(Parcel $parcel)
     {
         return Inertia::render('Parcels/Show', [
             'title' => 'Parcel Details',
+<<<<<<< HEAD
             'parcel' => $parcel->load(['courier', 'staff']),
         ]);
     }
@@ -99,3 +117,9 @@ class ParcelController extends Controller
         return redirect()->route('parcels.index')->with('success', 'Parcel deleted successfully.');
     }
 }
+=======
+            'parcel' => $parcel,
+        ]);
+    }
+}
+>>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
