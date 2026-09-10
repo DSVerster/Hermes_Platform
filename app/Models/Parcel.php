@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Parcel extends Model
 {
@@ -22,10 +22,12 @@ class Parcel extends Model
         'recipient_phone',
         'tracking_label',
         'parcel_type',
+        'courier_service',
         'date_received',
         'date_collected',
         'storage_location',
-        'status'
+        'status',
+        'collection_fee',
     ];
 
     /**
@@ -45,15 +47,12 @@ class Parcel extends Model
         // Points to Staff model using your custom staff_id column
         return $this->belongsTo(Staff::class, 'staff_id', 'staff_id');
     }
-}
-=======
 
-class Parcel extends Model
-{
-    protected $fillable = [
-        'tracking_number',
-        'status',
-        'received_at',
-    ];
+    /**
+     * Get the notifications sent for this parcel.
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'parcel_id', 'parcel_id');
+    }
 }
->>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f

@@ -27,11 +27,7 @@ class DashboardController extends Controller
             ['id' => 5, 'tracking_number' => 'HER-2026-005', 'status' => 'pending', 'customer' => 'Chris Wilson', 'date' => '2026-09-02'],
         ];
 
-<<<<<<< HEAD
         return Inertia::render('Dashboard', [
-=======
-        return Inertia::render('dashboard', [
->>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
             'title' => 'Dashboard',
             'stats' => $stats,
             'recent_parcels' => $recent_parcels,
@@ -43,8 +39,4 @@ class DashboardController extends Controller
             ],
         ]);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f

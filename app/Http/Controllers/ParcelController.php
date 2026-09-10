@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Parcel;
-<<<<<<< HEAD
 use App\Models\Courier;
 use App\Models\Staff;
+use App\Models\Notification;
+use App\Http\Requests\StoreParcelRequest;
+use App\Http\Requests\UpdateParcelRequest;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 
 class ParcelController extends Controller
 {
@@ -21,21 +22,10 @@ class ParcelController extends Controller
 
         $couriers = Courier::all(['courier_id', 'name']);
         $staffs = Staff::all(['staff_id', 'name', 'surname']);
-=======
-use Inertia\Inertia;
-
-class ParcelController extends Controller
-{
-    public function index()
-    {
-        $parcels = Parcel::orderBy('received_at', 'desc')
-            ->get(['id', 'tracking_number', 'status']);
->>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
 
         return Inertia::render('Parcels/Index', [
             'title' => 'Parcels',
             'parcels' => $parcels,
-<<<<<<< HEAD
             'couriers' => $couriers,
             'staffs' => $staffs,
         ]);
@@ -44,59 +34,38 @@ class ParcelController extends Controller
     /**
      * Store a newly created parcel inside the database.
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'tracking_label'   => 'required|string|unique:parcels,tracking_label',
-            'recipient_name'   => 'required|string',
-            'recipient_phone'  => 'required|string',
-            'parcel_type'      => 'required|string',
-            'storage_location' => 'required|string',
-            'status'           => 'required|string',
-            'courier_id'       => 'required|integer|exists:couriers,courier_id',
-            'staff_id'         => 'required|integer|exists:staff,staff_id', // Fixed: staffs changed to staff
-        ]);
+    public function store(StoreParcelRequest $request)
+{
+    $validated = $request->validated();
+    $validated['staff_id'] = $request->user()->staff_id;
+    $validated['date_received'] = now()->toDateString();
 
-        $validated['date_received'] = now()->toDateString();
+    $parcel = Parcel::create($validated);
 
-        Parcel::create($validated);
-
-        return redirect()->route('parcels.index')->with('success', 'Parcel created successfully.');
-    }
+    return redirect()->route('parcels.show', $parcel)
+        ->with('success', "Parcel {$parcel->tracking_label} logged.");
+}
+  
 
     /**
      * Display detailed data for a singular parcel record.
      */
-=======
-        ]);
-    }
-
->>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
     public function show(Parcel $parcel)
     {
         return Inertia::render('Parcels/Show', [
             'title' => 'Parcel Details',
-<<<<<<< HEAD
-            'parcel' => $parcel->load(['courier', 'staff']),
+            'parcel' => $parcel->load(['courier', 'staff', 'notifications']),
         ]);
     }
 
     /**
      * Update the specified parcel structural data.
      */
-    public function update(Request $request, Parcel $parcel)
+    public function update(UpdateParcelRequest $request, Parcel $parcel)
     {
-        $validated = $request->validate([
-            'tracking_label'   => 'required|string|unique:parcels,tracking_label,' . $parcel->parcel_id . ',parcel_id',
-            'recipient_name'   => 'required|string',
-            'recipient_phone'  => 'required|string',
-            'parcel_type'      => 'required|string',
-            'storage_location' => 'required|string',
-            'status'           => 'required|string',
-            'courier_id'       => 'required|integer|exists:couriers,courier_id',
-            'staff_id'         => 'required|integer|exists:staff,staff_id', // Fixed: staffs changed to staff
-            'date_collected'   => 'nullable|date',
-        ]);
+        $validated = $request->validated();
+
+        $wasReady = $parcel->status === 'ready_for_collection';
 
         if ($validated['status'] === 'collected' && !$parcel->date_collected) {
             $validated['date_collected'] = now()->toDateString();
@@ -104,7 +73,21 @@ class ParcelController extends Controller
 
         $parcel->update($validated);
 
-        return redirect()->route('parcels.index')->with('success', 'Parcel updated successfully.');
+        // Fire the one and only notification trigger: the moment a parcel
+        // first becomes ready for collection. Re-saving an already-ready
+        // parcel must never send a second SMS.
+        if (!$wasReady && $parcel->status === 'ready_for_collection') {
+            Notification::create([
+                'parcel_id' => $parcel->parcel_id,
+                'channel' => 'sms',
+                'message' => "Hi {$parcel->recipient_name}, your parcel "
+                    ."({$parcel->tracking_label}) is ready for collection.",
+                'status' => 'pending',
+            ]);
+        }
+
+        return redirect()->route('parcels.show', $parcel)
+            ->with('success', 'Parcel updated successfully.');
     }
 
     /**
@@ -117,9 +100,3 @@ class ParcelController extends Controller
         return redirect()->route('parcels.index')->with('success', 'Parcel deleted successfully.');
     }
 }
-=======
-            'parcel' => $parcel,
-        ]);
-    }
-}
->>>>>>> c4faf9af31407980159f0789ffe960231b04ea6f
