@@ -9,6 +9,7 @@ use App\Models\Notification;
 use App\Http\Requests\StoreParcelRequest;
 use App\Http\Requests\UpdateParcelRequest;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class ParcelController extends Controller
 {
@@ -35,17 +36,16 @@ class ParcelController extends Controller
      * Store a newly created parcel inside the database.
      */
     public function store(StoreParcelRequest $request)
-{
-    $validated = $request->validated();
-    $validated['staff_id'] = $request->user()->staff_id;
-    $validated['date_received'] = now()->toDateString();
+    {
+        $validated = $request->validated();
+        $validated['staff_id'] = $request->user()->staff_id;
+        $validated['date_received'] = now()->toDateString();
 
-    $parcel = Parcel::create($validated);
+        $parcel = Parcel::create($validated);
 
-    return redirect()->route('parcels.show', $parcel)
-        ->with('success', "Parcel {$parcel->tracking_label} logged.");
-}
-  
+        return redirect()->route('parcels.show', $parcel)
+            ->with('success', "Parcel {$parcel->tracking_label} logged.");
+    }
 
     /**
      * Display detailed data for a singular parcel record.
