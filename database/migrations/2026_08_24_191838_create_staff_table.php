@@ -8,19 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('staffs', function (Blueprint $table) {
+        Schema::create('staff', function (Blueprint $table) {
             $table->id('staff_id');
             $table->string('name');
             $table->string('surname');
             $table->string('role');
             $table->string('email_account')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password_hash');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('staffs');
+        Schema::dropIfExists('staff');
     }
 };

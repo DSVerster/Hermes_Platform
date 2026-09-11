@@ -16,17 +16,19 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->foreignId('staff_id')
-                ->constrained('staffs', 'staff_id')
+                ->constrained('staff', 'staff_id')
                 ->cascadeOnDelete();
 
             $table->string('recipient_name');
             $table->string('recipient_phone');
-            $table->string('tracking_label');
+            $table->string('tracking_label')->unique();
             $table->string('parcel_type');
+            $table->string('courier_service')->nullable();
             $table->date('date_received')->nullable();
             $table->date('date_collected')->nullable();
             $table->string('storage_location');
             $table->string('status');
+            $table->decimal('collection_fee', 8, 2);
 
             $table->timestamps();
         });
