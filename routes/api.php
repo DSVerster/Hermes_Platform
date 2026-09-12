@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\ParcelController;
+use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/health', function () {
-    return response()->json(['status' => 'ok']);
+Route::post('/token', [StaffController::class, 'issueToken']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/token/revoke', [StaffController::class, 'revokeToken']);
+    Route::get('/parcels/lookup', [ParcelController::class, 'apiLookup']);
 });

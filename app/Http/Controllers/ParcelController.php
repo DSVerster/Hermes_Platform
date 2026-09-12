@@ -99,4 +99,18 @@ class ParcelController extends Controller
 
         return redirect()->route('parcels.index')->with('success', 'Parcel deleted successfully.');
     }
+
+    /**
+     * Look up a parcel by tracking label for non-browser API clients.
+     */
+    public function apiLookup(Request $request)
+    {
+        $request->validate(['tracking_label' => ['required', 'string']]);
+
+        $parcel = Parcel::with('courier:courier_id,name')
+            ->where('tracking_label', $request->string('tracking_label'))
+            ->firstOrFail();
+
+        return response()->json($parcel);
+    }
 }

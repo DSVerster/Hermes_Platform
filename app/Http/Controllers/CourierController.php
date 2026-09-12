@@ -2,63 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Courier;
+use App\Http\Requests\StoreCourierRequest;
+use App\Http\Requests\UpdateCourierRequest;
+use Inertia\Inertia;
 
 class CourierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return Inertia::render('Couriers/Index', [
+            'title' => 'Couriers',
+            'couriers' => Courier::withCount('parcels')->orderBy('name')->get(),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return Inertia::render('Couriers/Create', ['title' => 'Add Courier']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreCourierRequest $request)
     {
-        //
+        Courier::create($request->validated());
+
+        return redirect()->route('couriers.index')->with('success', 'Courier added.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Courier $courier)
     {
-        //
+        return Inertia::render('Couriers/Show', [
+            'title' => 'Courier Details',
+            'courier' => $courier->load('parcels'),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Courier $courier)
     {
-        //
+        return Inertia::render('Couriers/Edit', [
+            'title' => 'Edit Courier',
+            'courier' => $courier,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateCourierRequest $request, Courier $courier)
     {
-        //
+        $courier->update($request->validated());
+
+        return redirect()->route('couriers.index')->with('success', 'Courier updated.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Courier $courier)
     {
-        //
+        $courier->delete();
+
+        return redirect()->route('couriers.index')->with('success', 'Courier removed.');
     }
 }

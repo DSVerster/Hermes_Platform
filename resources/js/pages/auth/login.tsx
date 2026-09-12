@@ -82,7 +82,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 autoComplete="current-password"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
-                                placeholder="••••••••"
+                                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                 className="pl-10 border-gray-200 focus:border-[#f5a623] focus:ring-[#f5a623]/20"
                             />
                         </div>
@@ -113,14 +113,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         Log in
                         <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
-                </div>
-
-                {/* Sign up link */}
-                <div className="text-center text-sm text-gray-500">
-                    Don't have an account?{' '}
-                    <TextLink href={route('register')} className="font-semibold text-[#e85d04] hover:text-[#f5a623]" tabIndex={5}>
-                        Sign up
-                    </TextLink>
                 </div>
             </form>
 
