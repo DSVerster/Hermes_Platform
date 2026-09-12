@@ -2,23 +2,24 @@
 
 namespace Database\Factories;
 
-use App\Models\Notification;
+use App\Models\Parcel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Notification>
+ * @extends Factory<\App\Models\Notification>
  */
 class NotificationFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $status = fake()->randomElement(['pending', 'sent', 'failed']);
+
         return [
-            //
+            'parcel_id' => Parcel::inRandomOrder()->first()?->parcel_id ?? Parcel::factory(),
+            'channel' => 'sms',
+            'message' => 'Your package is ready for collection.',
+            'status' => $status,
+            'sent_at' => $status === 'sent' ? fake()->dateTimeBetween('-1 month', 'now') : null,
         ];
     }
 }
