@@ -1,6 +1,6 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import DeleteUser from '@/components/delete-user';
@@ -21,15 +21,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type ProfileForm = {
     name: string;
-    email: string;
+    surname: string;
+    email_account: string;
 };
 
-export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
+export default function Profile({ status }: { status?: string }) {
     const { auth } = usePage<SharedData>().props;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         name: auth.user.name,
-        email: auth.user.email,
+        surname: auth.user.surname,
+        email_account: auth.user.email_account,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -58,51 +60,45 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
-                                autoComplete="name"
-                                placeholder="Full name"
+                                autoComplete="given-name"
+                                placeholder="First name"
                             />
 
                             <InputError className="mt-2" message={errors.name} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="surname">Surname</Label>
 
                             <Input
-                                id="email"
+                                id="surname"
+                                className="mt-1 block w-full"
+                                value={data.surname}
+                                onChange={(e) => setData('surname', e.target.value)}
+                                required
+                                autoComplete="family-name"
+                                placeholder="Surname"
+                            />
+
+                            <InputError className="mt-2" message={errors.surname} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="email_account">Email address</Label>
+
+                            <Input
+                                id="email_account"
                                 type="email"
                                 className="mt-1 block w-full"
-                                value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
+                                value={data.email_account}
+                                onChange={(e) => setData('email_account', e.target.value)}
                                 required
                                 autoComplete="username"
                                 placeholder="Email address"
                             />
 
-                            <InputError className="mt-2" message={errors.email} />
+                            <InputError className="mt-2" message={errors.email_account} />
                         </div>
-
-                        {mustVerifyEmail && auth.user.email_verified_at === null && (
-                            <div>
-                                <p className="-mt-4 text-sm text-muted-foreground">
-                                    Your email address is unverified.{' '}
-                                    <Link
-                                        href={route('verification.send')}
-                                        method="post"
-                                        as="button"
-                                        className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                    >
-                                        Click here to resend the verification email.
-                                    </Link>
-                                </p>
-
-                                {status === 'verification-link-sent' && (
-                                    <div className="mt-2 text-sm font-medium text-green-600">
-                                        A new verification link has been sent to your email address.
-                                    </div>
-                                )}
-                            </div>
-                        )}
 
                         <div className="flex items-center gap-4">
                             <Button disabled={processing}>Save</Button>

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +18,7 @@ class ProfileController extends Controller
     public function edit(Request $request): Response
     {
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => false,
             'status' => $request->session()->get('status'),
         ]);
     }
@@ -31,7 +30,7 @@ class ProfileController extends Controller
     {
         $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
+        if ($request->user()->isDirty('email_account')) {
             $request->user()->email_verified_at = null;
         }
 
@@ -49,11 +48,11 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        $staff = $request->user();
 
         Auth::logout();
 
-        $user->delete();
+        $staff->delete();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

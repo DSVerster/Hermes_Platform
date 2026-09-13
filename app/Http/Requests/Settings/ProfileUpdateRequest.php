@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Settings;
 
-use App\Models\User;
+use App\Models\Staff;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -18,14 +18,15 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
 
-            'email' => [
+            'email_account' => [
                 'required',
                 'string',
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
+                Rule::unique(Staff::class, 'email_account')->ignore($this->user()->staff_id, 'staff_id'),
             ],
         ];
     }
