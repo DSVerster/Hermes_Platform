@@ -13,8 +13,10 @@ export default function DashboardLayout({ children, title }: PropsWithChildren<D
     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
         { name: 'Parcels', href: '/parcels', icon: Package },
-        { name: 'Customers', href: '/customers', icon: Users },
         { name: 'Settings', href: '/settings', icon: Settings },
+        /* Need staff managemanet page only for roles that arent frontdesk
+        Need Courier management for all roles
+        Message manegment for all roles -> Only view message status or send reminder message*/
     ];
 
     return (
