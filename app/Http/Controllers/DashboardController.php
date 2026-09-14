@@ -21,7 +21,7 @@ class DashboardController extends Controller
 
         $recent_parcels = Parcel::orderByDesc('date_received')
             ->limit(5)
-            ->get(['parcel_id', 'tracking_label', 'status', 'recipient_name', 'date_received']);
+            ->get(['parcel_id', 'tracking_number', 'status', 'recipient_name', 'date_received']);
 
         return Inertia::render('Dashboard', [
             'title' => 'Dashboard',

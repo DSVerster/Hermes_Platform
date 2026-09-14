@@ -11,7 +11,7 @@ class NotificationController extends Controller
     {
         return Inertia::render('Notifications/Index', [
             'title' => 'Notifications',
-            'notifications' => Notification::with('parcel:parcel_id,tracking_label,recipient_name')
+            'notifications' => Notification::with('parcel:parcel_id,tracking_number,recipient_name')
                 ->orderByDesc('created_at')
                 ->paginate(20),
         ]);
