@@ -30,20 +30,12 @@ export default function Welcome() {
                                     Go to dashboard
                                 </Link>
                             ) : (
-                                <>
-                                    <Link
-                                        href={route('login')}
-                                        className="font-medium whitespace-nowrap text-[#2d1b4e]/70 transition-colors hover:text-[#2d1b4e]"
-                                    >
-                                        Log in
-                                    </Link>
-                                    <Link
-                                        href={route('register')}
-                                        className="rounded-full bg-[#2d1b4e] px-5 py-2 font-medium whitespace-nowrap text-white transition-colors hover:bg-[#241541]"
-                                    >
-                                        Create account
-                                    </Link>
-                                </>
+                                <Link
+                                    href={route('login')}
+                                    className="rounded-full bg-[#2d1b4e] px-5 py-2 font-medium whitespace-nowrap text-white transition-colors hover:bg-[#241541]"
+                                >
+                                    Log in
+                                </Link>
                             )}
                         </div>
                     </nav>
@@ -75,20 +67,12 @@ export default function Welcome() {
                                         Go to dashboard
                                     </Link>
                                 ) : (
-                                    <>
-                                        <Link
-                                            href={route('login')}
-                                            className="rounded-full bg-[#f5a623] px-6 py-3 text-sm font-semibold text-[#2d1b4e] transition-colors hover:bg-[#e09520]"
-                                        >
-                                            Sign in
-                                        </Link>
-                                        <Link
-                                            href={route('register')}
-                                            className="rounded-full border border-white/25 px-6 py-3 text-sm font-medium text-white transition-colors hover:border-white/50"
-                                        >
-                                            Create account
-                                        </Link>
-                                    </>
+                                    <Link
+                                        href={route('login')}
+                                        className="rounded-full bg-[#f5a623] px-6 py-3 text-sm font-semibold text-[#2d1b4e] transition-colors hover:bg-[#e09520]"
+                                    >
+                                        Sign in
+                                    </Link>
                                 )}
                             </div>
                         </div>
