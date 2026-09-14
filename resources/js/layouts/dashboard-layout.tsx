@@ -36,7 +36,7 @@ export default function DashboardLayout({ children, title }: PropsWithChildren<D
                 {/* Logo */}
                 <div className="flex items-center gap-3 px-6 py-6 border-b border-white/10">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-white/10 ring-2 ring-[#f5a623]/50">
-                        <img src="/images/logo.jpg" alt="Hermes" className="h-full w-full object-cover" />
+                        <img src="/images/logo.png" alt="Hermes" className="h-full w-full object-cover" />
                     </div>
                     <div>
                         <h1 className="text-lg font-bold text-white">Hermes</h1>

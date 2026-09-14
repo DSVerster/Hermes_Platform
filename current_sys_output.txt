@@ -12,6 +12,7 @@ E:.
 |   composer.json
 |   composer.lock
 |   eslint.config.js
+|   LOGO.png
 |   output.txt
 |   package-lock.json
 |   package.json
@@ -127,6 +128,10 @@ E:.
 |   +---Business Case & Feasibility Study
 |   |       Business Case - Hermies Platform.docx
 |   |       Feasibility Study Hermes Platform.docx
+|   |       
+|   +---Functional & Technical Specification
+|   |       Functional Specifications - Hermes Transport (Final).docx
+|   |       Technical Specifications - Hermes Transport (Final).docx
 |   |       
 |   \---Hermes ERD
 |           HERMES_ERD.pdf
@@ -33426,7 +33431,7 @@ E:.
 |   |   robots.txt
 |   |   
 |   \---images
-|           LOGO.jpg
+|           LOGO.png
 |           
 +---resources
 |   +---css
@@ -33452,7 +33457,7 @@ E:.
 |   |   |   |   heading.tsx
 |   |   |   |   icon.tsx
 |   |   |   |   input-error.tsx
-|   |   |   |   LOGO.jpg
+|   |   |   |   LOGO.png
 |   |   |   |   nav-footer.tsx
 |   |   |   |   nav-main.tsx
 |   |   |   |   nav-user.tsx
