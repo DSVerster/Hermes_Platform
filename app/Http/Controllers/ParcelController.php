@@ -19,7 +19,7 @@ class ParcelController extends Controller
     public function index()
     {
         $parcels = Parcel::orderBy('date_received', 'desc')
-            ->get(['parcel_id', 'tracking_label', 'status', 'recipient_name', 'parcel_type', 'storage_location', 'date_received']);
+            ->get(['parcel_id', 'tracking_number', 'status', 'recipient_name', 'parcel_type', 'storage_location', 'date_received']);
 
         $couriers = Courier::all(['courier_id', 'name']);
         $staffs = Staff::all(['staff_id', 'name', 'surname']);
@@ -44,7 +44,7 @@ class ParcelController extends Controller
         $parcel = Parcel::create($validated);
 
         return redirect()->route('parcels.show', $parcel)
-            ->with('success', "Parcel {$parcel->tracking_label} logged.");
+            ->with('success', "Parcel {$parcel->tracking_number} logged.");
     }
 
     /**
@@ -81,7 +81,7 @@ class ParcelController extends Controller
                 'parcel_id' => $parcel->parcel_id,
                 'channel' => 'sms',
                 'message' => "Hi {$parcel->recipient_name}, your parcel "
-                    ."({$parcel->tracking_label}) is ready for collection.",
+                    ."({$parcel->tracking_number}) is ready for collection.",
                 'status' => 'pending',
             ]);
         }
@@ -101,14 +101,14 @@ class ParcelController extends Controller
     }
 
     /**
-     * Look up a parcel by tracking label for non-browser API clients.
+     * Look up a parcel by tracking number for non-browser API clients.
      */
     public function apiLookup(Request $request)
     {
-        $request->validate(['tracking_label' => ['required', 'string']]);
+        $request->validate(['tracking_number' => ['required', 'string']]);
 
         $parcel = Parcel::with('courier:courier_id,name')
-            ->where('tracking_label', $request->string('tracking_label'))
+            ->where('tracking_number', $request->string('tracking_number'))
             ->firstOrFail();
 
         return response()->json($parcel);

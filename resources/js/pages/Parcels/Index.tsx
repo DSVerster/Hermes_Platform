@@ -23,7 +23,7 @@ import React, { useState } from 'react';
 
 type Parcel = {
     parcel_id: number;
-    tracking_label: string;
+    tracking_number: string;
     status: string;
     date_received: string;
 }
@@ -53,7 +53,7 @@ export default function Index({ title, parcels }: Props) {
     };
 
     const { data, setData, post, processing, errors, reset } = useForm({
-        tracking_label: '',
+        tracking_number: '',
         recipient_name: '',
         recipient_phone: '',
         parcel_type: '',
@@ -106,9 +106,9 @@ export default function Index({ title, parcels }: Props) {
                                 
                                 <form onSubmit={handleSubmit} className="space-y-4 mt-2">
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-600 block mb-1">Tracking Label / Number</label>
-                                        <input type="text" className="w-full p-2 border rounded-lg text-sm" value={data.tracking_label} onChange={e => setData('tracking_label', e.target.value)} required />
-                                        {errors.tracking_label && <p className="text-red-500 text-xs mt-1">{errors.tracking_label}</p>}
+                                        <label className="text-xs font-semibold text-gray-600 block mb-1">Tracking Number</label>
+                                        <input type="text" className="w-full p-2 border rounded-lg text-sm" value={data.tracking_number} onChange={e => setData('tracking_number', e.target.value)} required />
+                                        {errors.tracking_number && <p className="text-red-500 text-xs mt-1">{errors.tracking_number}</p>}
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
@@ -198,7 +198,7 @@ export default function Index({ title, parcels }: Props) {
                                             <StatusIcon className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-sm text-gray-900">{parcel.tracking_label}</p>
+                                            <p className="font-semibold text-sm text-gray-900">{parcel.tracking_number}</p>
                                             <p className="text-xs text-gray-500">
                                                 Received: {parcel.date_received ? new Date(parcel.date_received).toLocaleDateString() : 'N/A'}
                                             </p>

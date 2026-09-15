@@ -15,9 +15,9 @@ class UpdateParcelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tracking_label'   => [
+            'tracking_number'  => [
                 'required', 'string', 'max:100',
-                Rule::unique('parcels', 'tracking_label')->ignore($this->parcel->parcel_id, 'parcel_id'),
+                Rule::unique('parcels', 'tracking_number')->ignore($this->parcel->parcel_id, 'parcel_id'),
             ],
             'recipient_name'   => ['required', 'string', 'max:255'],
             'recipient_phone'  => ['required', 'string', 'max:20'],

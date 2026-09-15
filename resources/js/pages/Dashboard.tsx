@@ -21,7 +21,7 @@ import DashboardLayout from '@/layouts/dashboard-layout';
 
 type Parcel = {
     parcel_id: number;
-    tracking_label: string;
+    tracking_number: string;
     status: string;
     recipient_name: string;
     date_received: string;
@@ -173,7 +173,7 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
                                                 <StatusIcon className="h-5 w-5" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="font-semibold text-[#2d1b4e] truncate">{parcel.tracking_label}</p>
+                                                <p className="font-semibold text-[#2d1b4e] truncate">{parcel.tracking_number}</p>
                                                 <p className="text-sm text-gray-500">{parcel.recipient_name}</p>
                                             </div>
                                             <div className="text-right">
