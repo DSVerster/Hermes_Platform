@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->string('recipient_name');
             $table->string('recipient_phone');
-            $table->string('tracking_label')->unique();
+            $table->string('tracking_number')->unique();
             $table->string('parcel_type');
             $table->string('courier_service')->nullable();
             $table->date('date_received')->nullable();

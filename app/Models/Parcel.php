@@ -20,7 +20,7 @@ class Parcel extends Model
         'staff_id',
         'recipient_name',
         'recipient_phone',
-        'tracking_label',
+        'tracking_number',
         'parcel_type',
         'courier_service',
         'date_received',
