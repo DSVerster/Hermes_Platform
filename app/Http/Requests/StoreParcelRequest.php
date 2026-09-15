@@ -8,19 +8,21 @@ class StoreParcelRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return (bool) $this->user();
+        return true;
     }
 
     public function rules(): array
     {
         return [
-            'tracking_number'  => ['required', 'string', 'max:100', 'unique:parcels,tracking_number'],
-            'recipient_name'   => ['required', 'string', 'max:255'],
-            'recipient_phone'  => ['required', 'string', 'max:20'],
-            'parcel_type'      => ['required', 'string'],
-            'storage_location' => ['required', 'string', 'max:100'],
-            'status'           => ['required', 'string'],
-            'courier_id'       => ['required', 'integer', 'exists:couriers,courier_id'],
+            'courier_id' => ['required', 'exists:couriers,courier_id'],
+            'recipient_name' => ['required', 'string', 'max:255'],
+            'recipient_phone' => ['required', 'string', 'max:50'],
+            'tracking_number' => ['required', 'string', 'max:255', 'unique:parcels,tracking_number'],
+            'parcel_type' => ['required', 'string', 'max:255'],
+            'courier_service' => ['nullable', 'string', 'max:255'],
+            'storage_location' => ['required', 'string', 'max:255'],
+            'status' => ['required', 'string', 'max:50'],
+            'collection_fee' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

@@ -18,7 +18,11 @@ Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name(
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Custom API lookup route for parcels before resource to avoid parameter collision
+    Route::get('parcels/api-lookup', [ParcelController::class, 'apiLookup'])->name('parcels.api-lookup');
     Route::resource('parcels', ParcelController::class);
+
     Route::resource('couriers', CourierController::class);
 
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -32,5 +36,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

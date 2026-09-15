@@ -9,24 +9,29 @@ class UpdateParcelRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return (bool) $this->user();
+        return true;
     }
 
     public function rules(): array
     {
+        $parcel = $this->route('parcel');
+        $parcelId = is_object($parcel) ? $parcel->parcel_id : $parcel;
+
         return [
-            'tracking_number'  => [
-                'required', 'string', 'max:100',
-                Rule::unique('parcels', 'tracking_number')->ignore($this->parcel->parcel_id, 'parcel_id'),
+            'courier_id' => ['required', 'exists:couriers,courier_id'],
+            'recipient_name' => ['required', 'string', 'max:255'],
+            'recipient_phone' => ['required', 'string', 'max:50'],
+            'tracking_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('parcels', 'tracking_number')->ignore($parcelId, 'parcel_id'),
             ],
-            'recipient_name'   => ['required', 'string', 'max:255'],
-            'recipient_phone'  => ['required', 'string', 'max:20'],
-            'parcel_type'      => ['required', 'string'],
-            'storage_location' => ['required', 'string', 'max:100'],
-            'status'           => ['required', 'string'],
-            'courier_id'       => ['required', 'integer', 'exists:couriers,courier_id'],
-            'staff_id'         => ['required', 'integer', 'exists:staff,staff_id'],
-            'date_collected'   => ['nullable', 'date'],
+            'parcel_type' => ['required', 'string', 'max:255'],
+            'courier_service' => ['nullable', 'string', 'max:255'],
+            'storage_location' => ['required', 'string', 'max:255'],
+            'status' => ['required', 'string', 'max:50'],
+            'collection_fee' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

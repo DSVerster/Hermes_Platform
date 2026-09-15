@@ -14,12 +14,32 @@ use Illuminate\Http\Request;
 class ParcelController extends Controller
 {
     /**
-     * Display a listing of the parcels along with select systems dependencies.
-     */
-    public function index()
+     * Display a listing of the parcels along with search filtering.
+     **/
+    public function index(Request $request)
     {
-        $parcels = Parcel::orderBy('date_received', 'desc')
-            ->get(['parcel_id', 'tracking_number', 'status', 'recipient_name', 'parcel_type', 'storage_location', 'date_received']);
+        $search = $request->input('search');
+
+        $parcels = Parcel::when($search, function ($query, $search) {
+                $query->where('tracking_number', 'like', "%{$search}%")
+                      ->orWhere('recipient_name', 'like', "%{$search}%")
+                      ->orWhere('status', 'like', "%{$search}%")
+                      ->orWhere('parcel_type', 'like', "%{$search}%");
+            })
+            ->orderBy('date_received', 'desc')
+            ->get([
+                'parcel_id', 
+                'tracking_number', 
+                'status', 
+                'recipient_name', 
+                'parcel_type', 
+                'storage_location', 
+                'date_received',
+                'recipient_phone',
+                'courier_id',
+                'courier_service',
+                'collection_fee'
+            ]);
 
         $couriers = Courier::all(['courier_id', 'name']);
         $staffs = Staff::all(['staff_id', 'name', 'surname']);
@@ -27,6 +47,7 @@ class ParcelController extends Controller
         return Inertia::render('Parcels/Index', [
             'title' => 'Parcels',
             'parcels' => $parcels,
+            'filters' => $request->only(['search']),
             'couriers' => $couriers,
             'staffs' => $staffs,
         ]);
@@ -34,22 +55,22 @@ class ParcelController extends Controller
 
     /**
      * Store a newly created parcel inside the database.
-     */
+     **/
     public function store(StoreParcelRequest $request)
     {
         $validated = $request->validated();
         $validated['staff_id'] = $request->user()->staff_id;
         $validated['date_received'] = now()->toDateString();
-
+        
         $parcel = Parcel::create($validated);
 
-        return redirect()->route('parcels.show', $parcel)
+        return redirect()->route('parcels.index')
             ->with('success', "Parcel {$parcel->tracking_number} logged.");
     }
 
     /**
      * Display detailed data for a singular parcel record.
-     */
+     **/
     public function show(Parcel $parcel)
     {
         return Inertia::render('Parcels/Show', [
@@ -60,11 +81,10 @@ class ParcelController extends Controller
 
     /**
      * Update the specified parcel structural data.
-     */
+     **/
     public function update(UpdateParcelRequest $request, Parcel $parcel)
     {
         $validated = $request->validated();
-
         $wasReady = $parcel->status === 'ready_for_collection';
 
         if ($validated['status'] === 'collected' && !$parcel->date_collected) {
@@ -73,9 +93,6 @@ class ParcelController extends Controller
 
         $parcel->update($validated);
 
-        // Fire the one and only notification trigger: the moment a parcel
-        // first becomes ready for collection. Re-saving an already-ready
-        // parcel must never send a second SMS.
         if (!$wasReady && $parcel->status === 'ready_for_collection') {
             Notification::create([
                 'parcel_id' => $parcel->parcel_id,
@@ -86,31 +103,29 @@ class ParcelController extends Controller
             ]);
         }
 
-        return redirect()->route('parcels.show', $parcel)
+        return redirect()->route('parcels.index')
             ->with('success', 'Parcel updated successfully.');
     }
 
     /**
      * Wipe a specific parcel tracking listing completely from database history.
-     */
+     **/
     public function destroy(Parcel $parcel)
     {
         $parcel->delete();
-
         return redirect()->route('parcels.index')->with('success', 'Parcel deleted successfully.');
     }
 
     /**
      * Look up a parcel by tracking number for non-browser API clients.
-     */
+     **/
     public function apiLookup(Request $request)
     {
         $request->validate(['tracking_number' => ['required', 'string']]);
-
         $parcel = Parcel::with('courier:courier_id,name')
             ->where('tracking_number', $request->string('tracking_number'))
             ->firstOrFail();
-
+            
         return response()->json($parcel);
     }
 }
