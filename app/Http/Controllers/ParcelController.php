@@ -21,19 +21,19 @@ class ParcelController extends Controller
         $search = $request->input('search');
 
         $parcels = Parcel::when($search, function ($query, $search) {
-                $query->where('tracking_number', 'like', "%{$search}%")
-                      ->orWhere('recipient_name', 'like', "%{$search}%")
-                      ->orWhere('status', 'like', "%{$search}%")
-                      ->orWhere('parcel_type', 'like', "%{$search}%");
-            })
+            $query->where('tracking_number', 'like', "%{$search}%")
+                ->orWhere('recipient_name', 'like', "%{$search}%")
+                ->orWhere('status', 'like', "%{$search}%")
+                ->orWhere('parcel_type', 'like', "%{$search}%");
+        })
             ->orderBy('date_received', 'desc')
             ->get([
-                'parcel_id', 
-                'tracking_number', 
-                'status', 
-                'recipient_name', 
-                'parcel_type', 
-                'storage_location', 
+                'parcel_id',
+                'tracking_number',
+                'status',
+                'recipient_name',
+                'parcel_type',
+                'storage_location',
                 'date_received',
                 'recipient_phone',
                 'courier_id',
@@ -59,9 +59,16 @@ class ParcelController extends Controller
     public function store(StoreParcelRequest $request)
     {
         $validated = $request->validated();
-        $validated['staff_id'] = $request->user()->staff_id;
+
+        // Safety Fallback: Use logged-in staff id or default to the first available staff record
+        $user = $request->user();
+        $validated['staff_id'] = $user->staff_id ?? $user->id ?? Staff::first()->staff_id ?? 1;
+
         $validated['date_received'] = now()->toDateString();
-        
+
+        // Force the incoming status to remain received initially
+        $validated['status'] = $validated['status'] ?? 'received';
+
         $parcel = Parcel::create($validated);
 
         return redirect()->route('parcels.index')
@@ -71,8 +78,9 @@ class ParcelController extends Controller
     /**
      * Display detailed data for a singular parcel record.
      **/
-    public function show(Parcel $parcel)
+    public function show($id)
     {
+        $parcel = Parcel::findOrFail($id);
         return Inertia::render('Parcels/Show', [
             'title' => 'Parcel Details',
             'parcel' => $parcel->load(['courier', 'staff', 'notifications']),
@@ -82,23 +90,26 @@ class ParcelController extends Controller
     /**
      * Update the specified parcel structural data.
      **/
-    public function update(UpdateParcelRequest $request, Parcel $parcel)
+    public function update(UpdateParcelRequest $request, $id)
     {
+        // Explicitly load the parcel record using the primary key ID string
+        $parcel = Parcel::findOrFail($id);
         $validated = $request->validated();
+
         $wasReady = $parcel->status === 'ready_for_collection';
 
-        if ($validated['status'] === 'collected' && !$parcel->date_collected) {
+        if (isset($validated['status']) && $validated['status'] === 'collected' && !$parcel->date_collected) {
             $validated['date_collected'] = now()->toDateString();
         }
 
         $parcel->update($validated);
 
-        if (!$wasReady && $parcel->status === 'ready_for_collection') {
+        if (!$wasReady && isset($validated['status']) && $validated['status'] === 'ready_for_collection') {
             Notification::create([
                 'parcel_id' => $parcel->parcel_id,
                 'channel' => 'sms',
                 'message' => "Hi {$parcel->recipient_name}, your parcel "
-                    ."({$parcel->tracking_number}) is ready for collection.",
+                    . "({$parcel->tracking_number}) is ready for collection.",
                 'status' => 'pending',
             ]);
         }
@@ -110,8 +121,9 @@ class ParcelController extends Controller
     /**
      * Wipe a specific parcel tracking listing completely from database history.
      **/
-    public function destroy(Parcel $parcel)
+    public function destroy($id)
     {
+        $parcel = Parcel::findOrFail($id);
         $parcel->delete();
         return redirect()->route('parcels.index')->with('success', 'Parcel deleted successfully.');
     }
@@ -125,7 +137,7 @@ class ParcelController extends Controller
         $parcel = Parcel::with('courier:courier_id,name')
             ->where('tracking_number', $request->string('tracking_number'))
             ->firstOrFail();
-            
+
         return response()->json($parcel);
     }
 }

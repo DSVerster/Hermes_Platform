@@ -272,12 +272,12 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                     </div>
                 </div>
 
-                {/* CREATE MODAL */}
+                                {/* CREATE MODAL */}
                 <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-                    <DialogContent className="sm:max-w-md bg-white p-6 rounded-2xl shadow-xl">
+                    <DialogContent className="sm:max-w-md bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
                         <DialogHeader>
                             <DialogTitle className="text-[#2d1b4e] text-lg font-bold">Create New Parcel</DialogTitle>
-                            <DialogDescription>
+                            <DialogDescription className="text-gray-500 text-sm">
                                 Add a new parcel tracking record to the local server system.
                             </DialogDescription>
                         </DialogHeader>
@@ -285,53 +285,100 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                         <form onSubmit={handleCreateSubmit} className="space-y-4 mt-2">
                             <div>
                                 <label className="text-xs font-semibold text-gray-600 block mb-1">Tracking Number</label>
-                                <input type="text" className="w-full p-2 border rounded-lg text-sm" value={data.tracking_number} onChange={e => setData('tracking_number', e.target.value)} required />
+                                <input 
+                                    type="text" 
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white text-black placeholder-gray-400 focus:bg-white focus:text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]" 
+                                    value={data.tracking_number} 
+                                    onChange={e => setData('tracking_number', e.target.value)} 
+                                    required 
+                                />
                                 {errors.tracking_number && <p className="text-red-500 text-xs mt-1">{errors.tracking_number}</p>}
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <label className="text-xs font-semibold text-gray-600 block mb-1">Recipient Name</label>
-                                    <input type="text" className="w-full p-2 border rounded-lg text-sm" value={data.recipient_name} onChange={e => setData('recipient_name', e.target.value)} required />
+                                    <input 
+                                        type="text" 
+                                        className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white text-black placeholder-gray-400 focus:bg-white focus:text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]" 
+                                        value={data.recipient_name} 
+                                        onChange={e => setData('recipient_name', e.target.value)} 
+                                        required 
+                                    />
                                 </div>
                                 <div>
                                     <label className="text-xs font-semibold text-gray-600 block mb-1">Recipient Phone</label>
-                                    <input type="text" className="w-full p-2 border rounded-lg text-sm" value={data.recipient_phone} onChange={e => setData('recipient_phone', e.target.value)} required />
+                                    <input 
+                                        type="text" 
+                                        className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white text-black placeholder-gray-400 focus:bg-white focus:text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]" 
+                                        value={data.recipient_phone} 
+                                        onChange={e => setData('recipient_phone', e.target.value)} 
+                                        required 
+                                    />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <label className="text-xs font-semibold text-gray-600 block mb-1">Parcel Type</label>
-                                    <input type="text" className="w-full p-2 border rounded-lg text-sm" placeholder="Box, Envelope..." value={data.parcel_type} onChange={e => setData('parcel_type', e.target.value)} required />
+                                    <input 
+                                        type="text" 
+                                        className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white text-black placeholder-gray-400 focus:bg-white focus:text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]" 
+                                        placeholder="Box, Envelope..." 
+                                        value={data.parcel_type} 
+                                        onChange={e => setData('parcel_type', e.target.value)} 
+                                        required 
+                                    />
                                 </div>
                                 <div>
                                     <label className="text-xs font-semibold text-gray-600 block mb-1">Storage Location</label>
-                                    <input type="text" className="w-full p-2 border rounded-lg text-sm" placeholder="Shelf A1" value={data.storage_location} onChange={e => setData('storage_location', e.target.value)} required />
+                                    <input 
+                                        type="text" 
+                                        className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white text-black placeholder-gray-400 focus:bg-white focus:text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]" 
+                                        placeholder="Shelf A1" 
+                                        value={data.storage_location} 
+                                        onChange={e => setData('storage_location', e.target.value)} 
+                                        required 
+                                    />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <label className="text-xs font-semibold text-gray-600 block mb-1">Courier</label>
-                                    <select className="w-full p-2 border rounded-lg text-sm bg-white" value={data.courier_id} onChange={e => setData('courier_id', e.target.value)} required>
+                                    <select 
+                                        className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white text-black focus:bg-white focus:text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]" 
+                                        value={data.courier_id} 
+                                        onChange={e => setData('courier_id', e.target.value)} 
+                                        required
+                                    >
                                         {couriers.map(c => (
-                                            <option key={c.courier_id} value={c.courier_id}>{c.name}</option>
+                                            <option key={c.courier_id} value={c.courier_id} className="bg-white text-black">{c.name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
                                     <label className="text-xs font-semibold text-gray-600 block mb-1">Collection Fee ($)</label>
-                                    <input type="number" step="0.01" className="w-full p-2 border rounded-lg text-sm" value={data.collection_fee} onChange={e => setData('collection_fee', e.target.value)} required />
+                                    <input 
+                                        type="number" 
+                                        step="0.01" 
+                                        className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white text-black placeholder-gray-400 focus:bg-white focus:text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]" 
+                                        value={data.collection_fee} 
+                                        onChange={e => setData('collection_fee', e.target.value)} 
+                                        required 
+                                    />
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-2 pt-2 border-t mt-4">
-                                <Button type="button" variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
-                                <Button type="submit" disabled={processing} className="bg-[#e85d04] hover:bg-[#d45404] text-white">
+                            <div className="flex justify-end gap-3 pt-4 border-t mt-6">
+                                <Button type="button" variant="outline" onClick={() => setCreateOpen(false)} className="bg-black text-white hover:bg-neutral-800 rounded-lg px-6 font-medium text-xs">
+                                    Cancel
+                                </Button>
+                                <Button type="submit" disabled={processing} className="bg-[#e85d04] hover:bg-[#d45404] text-white rounded-lg px-6 font-semibold text-xs shadow-md shadow-orange-500/20">
                                     {processing ? 'Saving...' : 'Save Parcel'}
                                 </Button>
                             </div>
                         </form>
                     </DialogContent>
                 </Dialog>
+
 
                 {/* EDIT MODAL */}
                 <Dialog open={editOpen} onOpenChange={setEditOpen}>
