@@ -160,15 +160,13 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                         <form onSubmit={handleSearch} className="flex gap-2 flex-1 sm:flex-initial">
                             <div className="relative">
                                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Search parcels..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    className="pl-9 pr-4 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]"
-                                />
-                            </div>
-                            <Button type="submit" variant="outline" className="text-xs">Search</Button>
+                                <input type="text"
+                                placeholder="Search parcels..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="pl-9 pr-4 py-2 border rounded-lg text-sm bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#e85d04]/20 focus:border-[#e85d04]"/>
+                                </div>
+                                <Button type="submit" variant="outline" className="text-xs">Search</Button>
                         </form>
 
                         <Button onClick={openCreate} className="bg-gradient-to-r from-[#f5a623] to-[#e85d04] hover:from-[#e09520] hover:to-[#d45404] text-white shadow-lg shadow-orange-500/25">
