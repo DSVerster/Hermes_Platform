@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutDashboard, Package, Users, Settings, LogOut, Menu } from 'lucide-react';
+import { LayoutDashboard, Package, Truck, Bell, Users, LogOut, Menu } from 'lucide-react';
 import { useState, PropsWithChildren } from 'react';
+import { type SharedData } from '@/types';
 
 interface DashboardLayoutProps {
     title: string;
@@ -8,15 +9,15 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, title }: PropsWithChildren<DashboardLayoutProps>) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const user = usePage().props.auth?.user;
+    const { auth } = usePage<SharedData>().props;
+    const user = auth.user;
 
     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
         { name: 'Parcels', href: '/parcels', icon: Package },
-        { name: 'Settings', href: '/settings', icon: Settings },
-        /* Need staff managemanet page only for roles that arent frontdesk
-        Need Courier management for all roles
-        Message manegment for all roles -> Only view message status or send reminder message*/
+        { name: 'Couriers', href: '/couriers', icon: Truck },
+        { name: 'Notifications', href: '/notifications', icon: Bell },
+        ...(user?.role === 'admin' ? [{ name: 'Staff', href: '/staff', icon: Users }] : []),
     ];
 
     return (
@@ -38,7 +39,7 @@ export default function DashboardLayout({ children, title }: PropsWithChildren<D
                 {/* Logo */}
                 <div className="flex items-center gap-3 px-6 py-6 border-b border-white/10">
                     <div className="h-10 w-10 overflow-hidden rounded-full bg-white/10 ring-2 ring-[#f5a623]/50">
-                        <img src="/images/logo.png" alt="Hermes" className="h-full w-full object-cover" />
+                        <img src="/images/LOGO.jpg" alt="Hermes" className="h-full w-full object-cover" />
                     </div>
                     <div>
                         <h1 className="text-lg font-bold text-white">Hermes</h1>
@@ -68,7 +69,7 @@ export default function DashboardLayout({ children, title }: PropsWithChildren<D
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-white truncate">{user?.name || 'User'}</p>
-                            <p className="text-xs text-white/50 truncate">{user?.email || ''}</p>
+                            <p className="text-xs text-white/50 truncate">{user?.email_account || ''}</p>
                         </div>
                     </div>
                     <Link
