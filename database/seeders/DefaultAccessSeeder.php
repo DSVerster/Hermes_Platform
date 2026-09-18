@@ -7,7 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-class AdminAccessSeeder extends Seeder
+class DefaultAccessSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -19,11 +19,23 @@ class AdminAccessSeeder extends Seeder
         $admin = Staff::firstOrCreate(
             ['email_account' => $adminEmail],
             [
-                'name' => 'Admin',
-                'surname' => 'Admin',
-                'role' => 'Admin',
+                'name' => 'admin',
+                'surname' => 'admin',
+                'role' => 'admin',
                 'email_account' => 'admin@gmail.com',
                 'password_hash' => Hash::make('admin1234'),
+            ]
+        );
+
+        $front_deskEmail = 'front_desk@gmail.com';
+        $front_desk = Staff::firstOrCreate(
+            ['email_account' => $front_deskEmail],
+            [
+                'name' => 'front_desk',
+                'surname' => 'front_desk',
+                'role' => 'front_desk',
+                'email_account' => 'front_desk@gmail.com',
+                'password_hash' => Hash::make('front_desk1234'),
             ]
         );
 
