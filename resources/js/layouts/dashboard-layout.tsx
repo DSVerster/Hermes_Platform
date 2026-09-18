@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, title }: PropsWithChildren<DashboardLayoutProps>) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { auth } = usePage<SharedData>().props;
-    const user = auth.user;
+    const user = auth?.user;
 
     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -69,11 +69,12 @@ export default function DashboardLayout({ children, title }: PropsWithChildren<D
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-white truncate">{user?.name || 'User'}</p>
-                            <p className="text-xs text-white/50 truncate">{user?.email_account || ''}</p>
+                            <p className="text-xs text-white/50 truncate">{user?.email || ''}</p>
+
                         </div>
                     </div>
                     <Link
-                        href={route('logout')}
+                        href="/logout"
                         method="post"
                         as="button"
                         className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:text-red-400 hover:bg-red-500/10 transition-all"
@@ -96,10 +97,6 @@ export default function DashboardLayout({ children, title }: PropsWithChildren<D
                                 <Menu className="h-6 w-6" />
                             </button>
                             <h1 className="text-xl font-bold text-[#2d1b4e]">{title}</h1>
-                        </div>
-                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f5a623]/10 text-[#f5a623] text-sm font-medium">
-                            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                            Online
                         </div>
                     </div>
                 </header>
