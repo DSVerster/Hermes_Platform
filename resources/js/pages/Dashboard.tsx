@@ -218,15 +218,12 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
                             Dispatch Notifications
                         </Link>
 
+
                         {/* 4. Staff Accounts Hub */}
-                        <button 
-                            type="button"
-                            onClick={(e) => e.preventDefault()} 
-                            className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e85d04] text-white shadow-lg shadow-orange-500/25 transition-all text-sm font-semibold cursor-pointer"
-                        >
-                            <Shield className="h-4 w-4 text-white" />
-                            Staff Accounts Hub
-                        </button>
+                        <a href="/staff" className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e85d04] text-white shadow-lg shadow-orange-500/25 transition-all text-sm font-semibold cursor-pointer no-underline decoration-transparent">
+                        <Shield className="h-4 w-4 text-white" />
+                        Staff Accounts Hub
+                        </a>
                     </div>
                 </div>
             </div>

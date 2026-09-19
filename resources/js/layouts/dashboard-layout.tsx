@@ -12,12 +12,12 @@ export default function DashboardLayout({ children, title }: PropsWithChildren<D
     const { auth } = usePage<SharedData>().props;
     const user = auth?.user;
 
-    const navItems = [
+     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
         { name: 'Parcels', href: '/parcels', icon: Package },
         { name: 'Couriers', href: '/couriers', icon: Truck },
         { name: 'Notifications', href: '/notifications', icon: Bell },
-        ...(user?.role === 'admin' ? [{ name: 'Staff', href: '/staff', icon: Users }] : []),
+        { name: 'Staff', href: '/staff', icon: Users },
     ];
 
     return (
