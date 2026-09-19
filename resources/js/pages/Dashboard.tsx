@@ -1,13 +1,15 @@
 import { Head, Link } from '@inertiajs/react';
 import { 
     Package, 
-    TrendingUp, 
     Clock, 
     Box,
     Truck,
     CheckCircle,
-    AlertCircle
+    Send,
+    Shield,
+    PlusCircle
 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -78,15 +80,15 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
                                 Open {title} Dialog
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-md">
+                        <DialogContent className="sm:max-w-md bg-white border border-gray-100 p-6 rounded-2xl shadow-xl">
                             <DialogHeader>
-                                <DialogTitle className="text-[#2d1b4e]">{title}</DialogTitle>
-                                <DialogDescription>
+                                <DialogTitle className="text-[#2d1b4e] font-bold text-lg">{title}</DialogTitle>
+                                <DialogDescription className="text-gray-500 text-sm">
                                     This dialog belongs to the {title} page. You can add more information or actions here.
                                 </DialogDescription>
                             </DialogHeader>
-                            <div className="flex items-center gap-4 p-4 bg-[#f8f6fb] rounded-xl">
-                                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#f5a623] to-[#e85d04] flex items-center justify-center">
+                            <div className="flex items-center gap-4 p-4 bg-[#f8f6fb] rounded-xl mt-3">
+                                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#f5a623] to-[#e85d04] flex items-center justify-center shadow-sm">
                                     <Package className="h-6 w-6 text-white" />
                                 </div>
                                 <div>
@@ -118,7 +120,7 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
                                 <Box className="h-6 w-6 text-blue-600" />
                             </div>
                         </div>
-                        <p className="text-3xl font-bold text-[#2d1b4e]">{displayStats.pending_parcels}</p>
+                        <p className="text-3xl font-bold text-[#2d1b4e]">{displayStats.pending_parcels.toLocaleString()}</p>
                         <p className="text-sm text-gray-500 mt-1">Received</p>
                     </div>
 
@@ -129,7 +131,7 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
                                 <Clock className="h-6 w-6 text-amber-600" />
                             </div>
                         </div>
-                        <p className="text-3xl font-bold text-[#2d1b4e]">{displayStats.ready_for_collection}</p>
+                        <p className="text-3xl font-bold text-[#2d1b4e]">{displayStats.ready_for_collection.toLocaleString()}</p>
                         <p className="text-sm text-gray-500 mt-1">Ready for Collection</p>
                     </div>
 
@@ -174,11 +176,11 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-semibold text-[#2d1b4e] truncate">{parcel.tracking_number}</p>
-                                                <p className="text-sm text-gray-500">{parcel.recipient_name}</p>
+                                                <p className="text-sm text-gray-500">{parcel.recipient_name || 'No Name Provided'}</p>
                                             </div>
                                             <div className="text-right">
                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[parcel.status] || 'bg-gray-100 text-gray-600'}`}>
-                                                    {parcel.status.replace('_', ' ')}
+                                                    {parcel.status ? parcel.status.replace('_', ' ') : 'unknown'}
                                                 </span>
                                                 <p className="text-xs text-gray-400 mt-1">
                                                     {parcel.date_received ? new Date(parcel.date_received).toLocaleDateString() : 'N/A'}
@@ -187,60 +189,44 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
                                         </Link>
                                     );
                                 })}
-
                                 {parcels.length === 0 && (
-                                    <p className="text-center text-gray-500 text-sm py-8">No parcels logged yet.</p>
+                                    <div className="p-8 text-center text-gray-400 text-sm">
+                                        No parcels logged yet.
+                                    </div>
                                 )}
                             </div>
                         </div>
                     </div>
 
-                    {/* Quick Actions */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-                        <div className="p-6 border-b border-gray-100">
-                            <h3 className="text-lg font-bold text-[#2d1b4e]">Quick Actions</h3>
-                        </div>
-                        <div className="p-6 space-y-3">
-                            <Link href="/parcels" className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623]/10 to-[#e85d04]/10 hover:from-[#f5a623]/20 hover:to-[#e85d04]/20 transition-all group">
-                                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-[#f5a623] to-[#e85d04] flex items-center justify-center shadow-lg shadow-orange-500/25">
-                                    <Package className="h-5 w-5 text-white" />
-                                </div>
-                                <div className="text-left">
-                                    <p className="font-semibold text-[#2d1b4e] group-hover:text-[#e85d04] transition-colors">New Parcel</p>
-                                    <p className="text-xs text-gray-500">Log a parcel intake</p>
-                                </div>
-                            </Link>
+                    {/* Quick Actions Panel */}
+                     <div className="p-6 space-y-3">
+                        {/* 1. New Parcel Intake */}
+                        <Link href={route('parcels.index')} className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e85d04] hover:from-[#e09520] hover:to-[#d45404] text-white shadow-lg shadow-orange-500/25 transition-all text-sm font-semibold">
+                            <PlusCircle className="h-4 w-4 text-white" />
+                            New Parcel Intake
+                        </Link>
 
-                            <Link href="/couriers" className="w-full flex items-center gap-3 p-4 rounded-xl bg-[#2d1b4e]/5 hover:bg-[#2d1b4e]/10 transition-all group">
-                                <div className="h-10 w-10 rounded-lg bg-[#2d1b4e] flex items-center justify-center">
-                                    <Truck className="h-5 w-5 text-white" />
-                                </div>
-                                <div className="text-left">
-                                    <p className="font-semibold text-[#2d1b4e]">Couriers</p>
-                                    <p className="text-xs text-gray-500">Manage courier records</p>
-                                </div>
-                            </Link>
+                        {/* 2. Couriers Directory */}
+                        <Link href={route('couriers.index')} className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e85d04] hover:from-[#e09520] hover:to-[#d45404] text-white shadow-lg shadow-orange-500/25 transition-all text-sm font-semibold">
+                            <Truck className="h-4 w-4 text-white" />
+                            Couriers Directory
+                        </Link>
 
-                            <Link href="/notifications" className="w-full flex items-center gap-3 p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all group">
-                                <div className="h-10 w-10 rounded-lg bg-green-600 flex items-center justify-center">
-                                    <TrendingUp className="h-5 w-5 text-white" />
-                                </div>
-                                <div className="text-left">
-                                    <p className="font-semibold text-[#2d1b4e]">Notifications</p>
-                                    <p className="text-xs text-gray-500">View sent SMS log</p>
-                                </div>
-                            </Link>
+                        {/* 3. Dispatch Notifications */}
+                        <Link href={route('notifications.index')} className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e85d04] hover:from-[#e09520] hover:to-[#d45404] text-white shadow-lg shadow-orange-500/25 transition-all text-sm font-semibold">
+                            <Send className="h-4 w-4 text-white" />
+                            Dispatch Notifications
+                        </Link>
 
-                            <Link href="/staff" className="w-full flex items-center gap-3 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-all group">
-                                <div className="h-10 w-10 rounded-lg bg-blue-600 flex items-center justify-center">
-                                    <AlertCircle className="h-5 w-5 text-white" />
-                                </div>
-                                <div className="text-left">
-                                    <p className="font-semibold text-[#2d1b4e]">Staff</p>
-                                    <p className="text-xs text-gray-500">Manage staff accounts</p>
-                                </div>
-                            </Link>
-                        </div>
+                        {/* 4. Staff Accounts Hub */}
+                        <button 
+                            type="button"
+                            onClick={(e) => e.preventDefault()} 
+                            className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e85d04] text-white shadow-lg shadow-orange-500/25 transition-all text-sm font-semibold cursor-pointer"
+                        >
+                            <Shield className="h-4 w-4 text-white" />
+                            Staff Accounts Hub
+                        </button>
                     </div>
                 </div>
             </div>

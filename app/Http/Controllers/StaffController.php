@@ -3,35 +3,76 @@
 namespace App\Http\Controllers;
 
 use App\Models\Staff;
-use App\Http\Requests\UpdateStaffRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
+
 class StaffController extends Controller
 {
     public function index()
     {
         return Inertia::render('Staff/Index', [
-            'title' => 'Staff',
+            'title' => 'Staff Management',
+            // Fetching necessary columns including staff_id for actions mapping
             'staff' => Staff::orderBy('name')->get(['staff_id', 'name', 'surname', 'email_account', 'role']),
         ]);
     }
 
-    public function edit(Staff $staffMember)
+    public function store(Request $request)
     {
-        return Inertia::render('Staff/Edit', [
-            'title' => 'Edit Staff Member',
-            'staffMember' => $staffMember,
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'email_account' => ['required', 'string', 'email', 'max:255', 'unique:staff,email_account'],
+            'role' => ['required', Rule::in(['admin', 'staff'])],
+            'password' => ['required', 'string', 'min:6'],
         ]);
+
+        Staff::create([
+            'name' => $validated['name'],
+            'surname' => $validated['surname'],
+            'email_account' => $validated['email_account'],
+            'role' => $validated['role'],
+            // Hash the password cleanly into your password_hash DB string field
+            'password_hash' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->route('staff.index')->with('success', 'Staff member added successfully.');
     }
 
-    public function update(UpdateStaffRequest $request, Staff $staffMember)
+    // Changed $staffMember to $staff to resolve the Laravel resource parameter binding bug
+    public function update(Request $request, Staff $staff)
     {
-        $staffMember->update($request->validated());
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'email_account' => ['required', 'string', 'email', 'max:255', Rule::unique('staff', 'email_account')->ignore($staff->staff_id, 'staff_id')],
+            'role' => ['required', Rule::in(['admin', 'staff'])],
+            'password' => ['nullable', 'string', 'min:6'],
+        ]);
 
-        return redirect()->route('staff.index')->with('success', 'Staff member updated.');
+        $updateData = [
+            'name' => $validated['name'],
+            'surname' => $validated['surname'],
+            'email_account' => $validated['email_account'],
+            'role' => $validated['role'],
+        ];
+
+        if (!empty($validated['password'])) {
+            $updateData['password_hash'] = Hash::make($validated['password']);
+        }
+
+        $staff->update($updateData);
+
+        return redirect()->route('staff.index')->with('success', 'Staff member updated safely.');
+    }
+
+    public function destroy(Staff $staff)
+    {
+        $staff->delete();
+
+        return redirect()->route('staff.index')->with('success', 'Staff member removed from system database.');
     }
 
     /**
@@ -48,9 +89,7 @@ class StaffController extends Controller
         $staff = Staff::where('email_account', $request->email)->first();
 
         if (! $staff || ! Hash::check($request->password, $staff->password_hash)) {
-            throw ValidationException::withMessages([
-                'email' => ['These credentials do not match our records.'],
-            ]);
+            return response()->json(['message' => 'These credentials do not match our records.'], 422);
         }
 
         return response()->json([
