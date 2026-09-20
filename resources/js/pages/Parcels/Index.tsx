@@ -112,13 +112,35 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
         setEditOpen(true);
     };
 
-    const handleCreateSubmit = (e: React.FormEvent) => {
+   const handleCreateSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Prevent double submissions if the form is already submitting
+        if (processing) return;
+
         post(route('parcels.store'), {
+            preserveState: true,
+            preserveScroll: true,
+            
+            onBefore: () => {
+                console.log('Submitting parcel payload:', data);
+            },
             onSuccess: () => {
+                // Safely close the modal and reset form values
                 setCreateOpen(false);
                 reset();
+                
+                // Optional: Provide instant visual feedback to your user
+                alert('Parcel has been successfully created and saved!');
             },
+            onError: (errors) => {
+                // Catches and logs validation rules broken on the Laravel backend
+                console.error('Laravel database validation failed:', errors);
+            },
+            onFinish: () => {
+                // Ensure form state cleanup is executed
+                clearErrors();
+            }
         });
     };
 

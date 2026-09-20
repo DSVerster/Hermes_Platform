@@ -14,8 +14,14 @@ class StaffController extends Controller
     {
         return Inertia::render('Staff/Index', [
             'title' => 'Staff Management',
-            // Fetching necessary columns including staff_id for actions mapping
-            'staff' => Staff::orderBy('name')->get(['staff_id', 'name', 'surname', 'email_account', 'role']),
+            'staff' => Staff::orderBy('name')
+                ->get([
+                    'staff_id',
+                    'name',
+                    'surname',
+                    'email_account',
+                    'role'
+                ]),
         ]);
     }
 
@@ -24,7 +30,13 @@ class StaffController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
-            'email_account' => ['required', 'string', 'email', 'max:255', 'unique:staff,email_account'],
+            'email_account' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:staff,email_account'
+            ],
             'role' => ['required', Rule::in(['admin', 'staff'])],
             'password' => ['required', 'string', 'min:6'],
         ]);
@@ -34,20 +46,27 @@ class StaffController extends Controller
             'surname' => $validated['surname'],
             'email_account' => $validated['email_account'],
             'role' => $validated['role'],
-            // Hash the password cleanly into your password_hash DB string field
             'password_hash' => Hash::make($validated['password']),
         ]);
 
-        return redirect()->route('staff.index')->with('success', 'Staff member added successfully.');
+        return redirect()
+            ->route('staff.index')
+            ->with('success', 'Staff member added successfully.');
     }
 
-    // Changed $staffMember to $staff to resolve the Laravel resource parameter binding bug
     public function update(Request $request, Staff $staff)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
-            'email_account' => ['required', 'string', 'email', 'max:255', Rule::unique('staff', 'email_account')->ignore($staff->staff_id, 'staff_id')],
+            'email_account' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('staff', 'email_account')
+                    ->ignore($staff->staff_id, 'staff_id')
+            ],
             'role' => ['required', Rule::in(['admin', 'staff'])],
             'password' => ['nullable', 'string', 'min:6'],
         ]);
@@ -65,19 +84,20 @@ class StaffController extends Controller
 
         $staff->update($updateData);
 
-        return redirect()->route('staff.index')->with('success', 'Staff member updated safely.');
+        return redirect()
+            ->route('staff.index')
+            ->with('success', 'Staff member updated safely.');
     }
 
     public function destroy(Staff $staff)
     {
         $staff->delete();
 
-        return redirect()->route('staff.index')->with('success', 'Staff member removed from system database.');
+        return redirect()
+            ->route('staff.index')
+            ->with('success', 'Staff member removed from system database.');
     }
 
-    /**
-     * Issue a Sanctum API token for non-browser clients.
-     */
     public function issueToken(Request $request)
     {
         $request->validate([
@@ -86,21 +106,38 @@ class StaffController extends Controller
             'device_name' => ['required', 'string'],
         ]);
 
-        $staff = Staff::where('email_account', $request->email)->first();
+        $staff = Staff::where(
+            'email_account',
+            $request->email
+        )->first();
 
-        if (! $staff || ! Hash::check($request->password, $staff->password_hash)) {
-            return response()->json(['message' => 'These credentials do not match our records.'], 422);
+        if (
+            !$staff ||
+            !Hash::check(
+                $request->password,
+                $staff->password_hash
+            )
+        ) {
+            return response()->json([
+                'message' => 'These credentials do not match our records.'
+            ], 422);
         }
 
         return response()->json([
-            'token' => $staff->createToken($request->device_name)->plainTextToken,
+            'token' => $staff
+                ->createToken($request->device_name)
+                ->plainTextToken,
         ]);
     }
 
     public function revokeToken(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()
+            ->currentAccessToken()
+            ->delete();
 
-        return response()->json(['message' => 'Token revoked.']);
+        return response()->json([
+            'message' => 'Token revoked.'
+        ]);
     }
 }

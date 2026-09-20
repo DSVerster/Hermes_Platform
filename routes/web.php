@@ -17,10 +17,11 @@ Route::get('/auth/google/redirect', [OAuthController::class, 'redirect'])->name(
 Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name('auth.google.callback');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Custom API lookup route for parcels before resource to avoid parameter collision
     Route::get('parcels/api-lookup', [ParcelController::class, 'apiLookup'])->name('parcels.api-lookup');
+
     Route::resource('parcels', ParcelController::class);
 
     Route::resource('couriers', CourierController::class);
@@ -30,9 +31,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('notifications/{notification}/resend', [NotificationController::class, 'resend'])->name('notifications.resend');
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
-        Route::get('staff/{staffMember}/edit', [StaffController::class, 'edit'])->name('staff.edit');
-        Route::put('staff/{staffMember}', [StaffController::class, 'update'])->name('staff.update');
+
+        Route::get('staff', [StaffController::class, 'index'])
+            ->name('staff.index');
+
+        // CREATE STAFF
+        Route::post('staff', [StaffController::class, 'store'])
+            ->name('staff.store');
+
+        // UPDATE STAFF
+        Route::put('staff/{staff}', [StaffController::class, 'update'])
+            ->name('staff.update');
+
+        // DELETE STAFF
+        Route::delete('staff/{staff}', [StaffController::class, 'destroy'])
+            ->name('staff.destroy');
     });
 });
 

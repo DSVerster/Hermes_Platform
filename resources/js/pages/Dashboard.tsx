@@ -200,6 +200,13 @@ export default function Dashboard({ title, stats, recent_parcels }: Props) {
 
                     {/* Quick Actions Panel */}
                      <div className="p-6 space-y-3">
+                        <div className="flex items-center justify-between border-b border-gray-100 pb-2 mb-1">
+                            <h1 className="text-sm font-bold uppercase tracking-wider text-[#2d1b4e]">
+                                Quick Actions
+                            </h1>
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#f5a623]" />
+                        </div>
+
                         {/* 1. New Parcel Intake */}
                         <Link href={route('parcels.index')} className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e85d04] hover:from-[#e09520] hover:to-[#d45404] text-white shadow-lg shadow-orange-500/25 transition-all text-sm font-semibold">
                             <PlusCircle className="h-4 w-4 text-white" />
