@@ -12,16 +12,12 @@ class HandleInertiaRequests extends Middleware
     /**
      * The root template that's loaded on the first page visit.
      *
-     * @see https://inertiajs.com/server-side-setup#root-template
-     *
      * @var string
      */
     protected $rootView = 'app';
 
     /**
      * Determines the current asset version.
-     *
-     * @see https://inertiajs.com/asset-versioning
      */
     public function version(Request $request): ?string
     {
@@ -31,26 +27,44 @@ class HandleInertiaRequests extends Middleware
     /**
      * Define the props that are shared by default.
      *
-     * @see https://inertiajs.com/shared-data
-     *
      * @return array<string, mixed>
      */
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $user = $request->user();
+
         return [
             ...parent::share($request),
+
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
-            'auth' => [
-                'user' => $request->user(),
+
+            'quote' => [
+                'message' => trim($message),
+                'author' => trim($author),
             ],
-            'ziggy' => fn (): array => [
+            'auth' => [
+                'user' => $request->user()
+                    ? [
+                        'staff_id' => $request->user()->staff_id,
+                        'name' => $request->user()->name,
+                        'surname' => $request->user()->surname,
+                        'role' => $request->user()->role,
+                        'email_account' => $request->user()->email_account,
+                    ]
+                    : null,
+            ],
+
+
+            'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+
+            'sidebarOpen' =>
+            ! $request->hasCookie('sidebar_state') ||
+                $request->cookie('sidebar_state') === 'true',
         ];
     }
 }

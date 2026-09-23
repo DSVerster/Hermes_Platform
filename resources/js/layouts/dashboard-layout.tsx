@@ -19,7 +19,9 @@ interface DashboardLayoutProps {
 }
 
 interface UserWithRole {
+    staff_id?: number;
     name?: string;
+    surname?: string;
     email?: string;
     email_account?: string;
     role?: string;
@@ -66,6 +68,7 @@ export default function DashboardLayout({
 
     return (
         <div className="flex min-h-screen bg-[#f8f6fb]">
+
             {/* Mobile overlay */}
             {sidebarOpen && (
                 <div
@@ -88,6 +91,7 @@ export default function DashboardLayout({
                     }
                 `}
             >
+
                 {/* Logo */}
                 <div className="flex items-center gap-3 px-6 py-6 border-b border-white/10">
                     <div className="h-14 w-14 overflow-hidden rounded-full bg-white/10 ring-2 ring-[#f5a623]/60">
@@ -111,11 +115,13 @@ export default function DashboardLayout({
 
                 {/* Navigation */}
                 <nav className="px-4 py-6 space-y-2">
+
                     {navItems
                         .filter(
                             (item) =>
                                 !item.adminOnly ||
-                                user?.email === 'admin@gmail.com'
+                                user?.email === 'admin@gmail.com' ||
+                                user?.email_account === 'admin@gmail.com'
                         )
                         .map((item) => (
                             <Link
@@ -131,16 +137,20 @@ export default function DashboardLayout({
                                 </span>
                             </Link>
                         ))}
+
                 </nav>
 
                 {/* User & Logout */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+
                     <div className="flex items-center gap-3 px-4 py-3 mb-2">
+
                         <div className="h-8 w-8 rounded-full bg-[#f5a623] flex items-center justify-center text-[#2d1b4e] font-bold text-sm">
                             {user?.name?.charAt(0) || 'U'}
                         </div>
 
                         <div className="flex-1 min-w-0">
+
                             <p className="text-sm font-medium text-white truncate">
                                 {user?.name || 'User'}
                             </p>
@@ -148,6 +158,7 @@ export default function DashboardLayout({
                             <p className="text-xs text-white/50 truncate">
                                 {user?.email_account || user?.email || ''}
                             </p>
+
                         </div>
                     </div>
 
@@ -163,14 +174,19 @@ export default function DashboardLayout({
                             Log out
                         </span>
                     </Link>
+
                 </div>
             </aside>
 
             {/* Main */}
             <div className="flex-1 flex flex-col min-w-0">
+
                 <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-gray-200 px-6 py-4">
+
                     <div className="flex items-center justify-between">
+
                         <div className="flex items-center gap-4">
+
                             <button
                                 onClick={() => setSidebarOpen(true)}
                                 className="lg:hidden p-2 rounded-lg hover:bg-gray-100 text-[#2d1b4e]"
@@ -181,14 +197,19 @@ export default function DashboardLayout({
                             <h1 className="text-xl font-bold text-[#2d1b4e]">
                                 {title}
                             </h1>
+
                         </div>
+
                     </div>
+
                 </header>
 
                 <main className="flex-1 p-6 overflow-auto">
                     {children}
                 </main>
+
             </div>
+
         </div>
     );
 }
