@@ -32,9 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Financial Reports Route
     Route::get('financial-reports', [FinancialReportController::class, 'index'])->name('financial-reports');
 
-    // Settings Route
+    // Settings Route (Fixed to lowercase 'settings' to match your folder)
     Route::get('settings', function () {
-        return Inertia::render('Settings/Index');
+        return Inertia::render('settings/Index');
     })->name('settings');
 
     Route::middleware('role:admin')->group(function () {
