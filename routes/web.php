@@ -9,6 +9,7 @@ use App\Http\Controllers\ParcelController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\FinancialReportController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -28,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
     Route::post('notifications/{notification}/resend', [NotificationController::class, 'resend'])->name('notifications.resend');
+    Route::post('notifications/{notification}/collect', [NotificationController::class, 'markCollected'])->name('notifications.collect');
 
     // Financial Reports Route
     Route::get('financial-reports', [FinancialReportController::class, 'index'])->name('financial-reports');
@@ -46,6 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // DELETE STAFF
         Route::delete('staff/{staff}', [StaffController::class, 'destroy'])->name('staff.destroy');
     });
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/financial-report', [FinancialReportController::class, 'index'])->name('financial.report');
+    Route::post('/financial-report/generate', [FinancialReportController::class, 'generate'])->name('financial.generate');
 });
 
 require __DIR__ . '/settings.php';

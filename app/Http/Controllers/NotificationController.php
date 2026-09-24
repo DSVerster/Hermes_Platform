@@ -11,7 +11,7 @@ class NotificationController extends Controller
     {
         return Inertia::render('Notifications/Index', [
             'title' => 'Notifications',
-            'notifications' => Notification::with('parcel:parcel_id,tracking_number,recipient_name')
+            'notifications' => Notification::with('parcel:parcel_id,tracking_number,recipient_name,date_collected,status')
                 ->orderByDesc('created_at')
                 ->paginate(20),
         ]);
@@ -33,5 +33,17 @@ class NotificationController extends Controller
         // SendParcelNotification::dispatch($notification);
 
         return back()->with('success', 'Notification queued for resend.');
+    }
+
+    public function markCollected(Notification $notification)
+    {
+        if ($notification->parcel) {
+            $notification->parcel->update([
+                'status' => 'collected',
+                'date_collected' => now()->toDateString(),
+            ]);
+        }
+
+        return back()->with('success', 'Parcel marked as collected.');
     }
 }

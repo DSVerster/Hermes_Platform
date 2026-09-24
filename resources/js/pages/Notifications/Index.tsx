@@ -1,13 +1,15 @@
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/layouts/dashboard-layout';
 import { Badge } from '@/components/ui/badge';
-import { Bell, RefreshCw, Send, CheckCircle2, AlertCircle, Eye, Box, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Bell, RefreshCw, Send, CheckCircle2, AlertCircle, Eye, Box, ArrowLeft, ArrowRight, Calendar, CheckCheck } from 'lucide-react';
 
 type Parcel = {
     parcel_id: number;
     tracking_number: string;
     tracking_label?: string;
     recipient_name?: string;
+    date_collected?: string | null;
+    status?: string;
 };
 
 type Notification = {
@@ -40,10 +42,16 @@ export default function Index({ title, notifications }: Props) {
         }
     };
 
+    const handleMarkCollected = (notificationId: number) => {
+        if (confirm('Mark this parcel as collected?')) {
+            router.post(`/notifications/${notificationId}/collect`, {}, { preserveScroll: true });
+        }
+    };
+
     return (
         <DashboardLayout title={title}>
             <Head title={title} />
-            <div className="mx-auto max-w-5xl space-y-6 p-6">
+            <div className="mx-auto max-w-6xl space-y-6 p-6">
                 
                 <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
@@ -65,6 +73,7 @@ export default function Index({ title, notifications }: Props) {
                             <thead className="bg-gray-50/70 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <tr>
                                     <th className="p-4 pl-6"><Box className="h-3.5 w-3.5 inline mr-1" /> Parcel</th>
+                                    <th className="p-4"><Calendar className="h-3.5 w-3.5 inline mr-1" /> Date to Collect</th>
                                     <th className="p-4"><Send className="h-3.5 w-3.5 inline mr-1" /> Channel</th>
                                     <th className="p-4">Message Body</th>
                                     <th className="p-4">Status</th>
@@ -83,6 +92,13 @@ export default function Index({ title, notifications }: Props) {
                                                 <span className="text-gray-400">—</span>
                                             )}
                                         </td>
+                                        <td className="p-4 text-gray-600">
+                                            {n.parcel?.date_collected ? (
+                                                <span className="font-medium text-emerald-600">{n.parcel.date_collected}</span>
+                                            ) : (
+                                                <span className="text-gray-400 italic">Not collected</span>
+                                            )}
+                                        </td>
                                         <td className="p-4">
                                             <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wide">
                                                 {n.channel}
@@ -93,7 +109,11 @@ export default function Index({ title, notifications }: Props) {
                                         </td>
                                         <td className="p-4">
                                             <div className="flex items-center gap-1.5">
-                                                {n.status === 'failed' ? (
+                                                {n.parcel?.status === 'collected' ? (
+                                                    <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-none capitalize font-semibold flex items-center gap-1">
+                                                        <CheckCircle2 className="h-3 w-3" /> Collected
+                                                    </Badge>
+                                                ) : n.status === 'failed' ? (
                                                     <Badge className="bg-red-50 text-red-700 border border-red-200 shadow-none capitalize font-semibold flex items-center gap-1">
                                                         <AlertCircle className="h-3 w-3" /> {n.status}
                                                     </Badge>
@@ -110,12 +130,19 @@ export default function Index({ title, notifications }: Props) {
                                         </td>
                                         <td className="p-4 pr-6 text-right">
                                             <div className="flex items-center justify-end space-x-1">
-                                                {/* View Detail Link */}
+                                                {/* Mark Collected Action Button */}
+                                                {n.parcel && n.parcel.status !== 'collected' && (
+                                                    <button 
+                                                        onClick={() => handleMarkCollected(n.notification_id)} 
+                                                        className="p-2 text-gray-400 hover:text-emerald-600 rounded-lg hover:bg-gray-100" 
+                                                        title="Mark as Collected"
+                                                    >
+                                                        <CheckCheck className="h-4 w-4" />
+                                                    </button>
+                                                )}
                                                 <Link href={`/notifications/${n.notification_id}`} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100" title="View Log Detail">
                                                     <Eye className="h-4 w-4" />
                                                 </Link>
-
-                                                {/* Resend Action Button */}
                                                 <button 
                                                     onClick={() => handleResend(n.notification_id)} 
                                                     className="p-2 text-gray-400 hover:text-amber-600 rounded-lg hover:bg-gray-100" 
@@ -151,7 +178,6 @@ export default function Index({ title, notifications }: Props) {
                                 key={i}
                                 href={link.url ?? '#'}
                                 preserveScroll
-                                disabled={!link.url}
                                 className={`rounded-xl px-4 py-2 text-xs font-semibold border transition-all ${
                                     !link.url ? 'opacity-40 cursor-not-allowed bg-gray-50 border-gray-100 text-gray-400' :
                                     link.active ? 'bg-gradient-to-r from-[#f5a623] to-[#e85d04] text-white border-transparent shadow-sm' : 
@@ -171,6 +197,5 @@ export default function Index({ title, notifications }: Props) {
                 </nav>
             </div>
         </DashboardLayout>
-
     );
 }

@@ -30,7 +30,7 @@ class ParcelFactory extends Factory
                 : null,
             'storage_location' => 'Shelf ' . fake()->randomLetter() . fake()->numberBetween(1, 20),
             'status' => $status,
-            'collection_fee' => 50,
+            'collection_fee' => 10,
         ];
     }
 }

@@ -69,6 +69,8 @@ class ParcelController extends Controller
         // Force the incoming status to remain received initially
         $validated['status'] = $validated['status'] ?? 'received';
 
+        $validated['collection_fee'] = $validated['collection_fee'] ?? 10.00;
+
         $parcel = Parcel::create($validated);
 
         return redirect()->route('parcels.index')
