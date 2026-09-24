@@ -62,7 +62,7 @@ export default function DashboardLayout({
         { name: 'Parcels', href: '/parcels', icon: Package },
         { name: 'Couriers', href: '/couriers', icon: Truck },
         { name: 'Notifications', href: '/notifications', icon: Bell },
-        { name: 'Financial Reports', href: '/financial-reports', icon: LayoutDashboard }, // Reusing icon if BarChart3 isn't imported
+        { name: 'Financial Reports', href: '/financial-reports', icon: LayoutDashboard, adminOnly: true },  
         { name: 'Staff', href: '/staff', icon: Users, adminOnly: true },
     ];
 
