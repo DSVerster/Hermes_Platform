@@ -4,7 +4,7 @@ import DashboardLayout from '@/layouts/dashboard-layout';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import { Package, Clock, CheckCircle, Box, Truck } from 'lucide-react';
+import { Package, CheckCircle, Box} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 type RecentParcel = {
