@@ -48,7 +48,7 @@ export default function DashboardLayout({
         { name: 'Parcels', href: '/parcels', icon: Package },
         { name: 'Couriers', href: '/couriers', icon: Truck },
         { name: 'Notifications', href: '/notifications', icon: Bell },
-        { name: 'Financial Reports', href: '/financial-reports', icon: LayoutDashboard },
+        { name: 'Financial Reports', href: '/financial-reports', icon: LayoutDashboard, adminOnly: true },
         { name: 'Staff', href: '/staff', icon: Users, adminOnly: true },
     ];
 
@@ -148,7 +148,6 @@ export default function DashboardLayout({
                                 {title}
                             </h1>
                         </div>
-                        {/* Toggle button removed from here */}
                     </div>
                 </header>
                 <main className="flex-1 p-6 overflow-auto">
