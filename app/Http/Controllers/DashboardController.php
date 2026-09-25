@@ -1,39 +1,52 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Parcel;
+use Carbon\Carbon;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $totalParcels = Parcel::count();
+        $receivedCount = Parcel::where('status', 'received')->count();
+        $collectedCount = Parcel::where('status', 'collected')->count();
 
-        $stats = [
-            'total_parcels' => Parcel::count(),
-            'pending_parcels' => Parcel::where('status', 'received')->count(),
-            'ready_for_collection' => Parcel::where('status', 'ready_for_collection')->count(),
-            'collected_parcels' => Parcel::where('status', 'collected')->count(),
-        ];
+        // Build 7-day chart data (received vs collected per day)
+        $chartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->format('Y-m-d');
+            $label = Carbon::now()->subDays($i)->format('M d');
 
-        $recent_parcels = Parcel::orderByDesc('date_received')
-            ->limit(5)
+            $received = Parcel::where('status', 'received')
+                ->whereDate('date_received', $date)
+                ->count();
+
+            $collected = Parcel::where('status', 'collected')
+                ->whereDate('date_collected', $date)
+                ->count();
+
+            $chartData[] = [
+                'date' => $label,
+                'received' => $received,
+                'collected' => $collected,
+            ];
+        }
+
+        // Recent parcels for the list
+        $recentParcels = Parcel::with('courier')
+            ->orderBy('date_received', 'desc')
+            ->take(5)
             ->get(['parcel_id', 'tracking_number', 'status', 'recipient_name', 'date_received']);
 
-        return Inertia::render('Dashboard', [
+        return Inertia::render('Dashboard/Index', [
             'title' => 'Dashboard',
-            'stats' => $stats,
-            'recent_parcels' => $recent_parcels,
-            'auth' => [
-                'user' => $user ? [
-                    'name' => $user->name,
-                    'surname' => $user->surname,
-                    'email' => $user->email_account,
-                ] : null,
-            ],
+            'totalParcels' => $totalParcels,
+            'receivedCount' => $receivedCount,
+            'collectedCount' => $collectedCount,
+            'chartData' => $chartData,
+            'recentParcels' => $recentParcels,
         ]);
     }
 }

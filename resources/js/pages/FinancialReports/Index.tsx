@@ -10,7 +10,6 @@ interface Parcel {
     collection_fee: number;
     date_received: string;
 }
-
 interface Props {
     parcels: Parcel[];
     totalRevenue: number;
@@ -31,7 +30,6 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
         e.preventDefault();
         router.get(route('financial-reports'), { search: searchInput, filter: activeFilter });
     };
-
     const handleFilterChange = (newFilter: string) => {
         setActiveFilter(newFilter);
         router.get(route('financial-reports'), { search: searchInput, filter: newFilter });
@@ -50,7 +48,6 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                         <p className="text-gray-600 dark:text-gray-400">Track revenue and parcel costs.</p>
                     </div>
 
-                    {/* Search */}
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                         <form onSubmit={handleSearch} className="flex-1 flex gap-2">
                             <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search..." className="flex-1 px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1e1333] text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
@@ -65,11 +62,12 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                         </div>
                     </div>
 
-                    {/* Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow p-6 border border-gray-100 dark:border-[#2d1b4e]">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg"><svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                                <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                                    <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
                                 <span className="text-sm text-gray-500 dark:text-gray-400">All Time</span>
                             </div>
                             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalRevenue)}</h3>
@@ -77,15 +75,19 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                         </div>
                         <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow p-6 border border-gray-100 dark:border-[#2d1b4e]">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg"><svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-                                <span className="text-sm text-orange-600 dark:text-orange-400">Pending</span>
+                                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                                    <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                                </div>
+                                <span className="text-sm text-blue-600 dark:text-blue-400">Received</span>
                             </div>
                             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(pendingRevenue)}</h3>
                             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Awaiting Collection</p>
                         </div>
                         <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow p-6 border border-gray-100 dark:border-[#2d1b4e]">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg"><svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                                    <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
                                 <span className="text-sm text-green-600 dark:text-green-400">Completed</span>
                             </div>
                             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(completedRevenue)}</h3>
@@ -93,7 +95,6 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                         </div>
                     </div>
 
-                    {/* Table */}
                     <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow border border-gray-100 dark:border-[#2d1b4e]">
                         <div className="px-6 py-4 border-b border-gray-200 dark:border-[#2d1b4e] flex items-center justify-between">
                             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">All Parcels</h2>
@@ -118,8 +119,12 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{formatDate(parcel.date_received)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">{formatCurrency(parcel.collection_fee)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${parcel.status === 'collected' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'}`}>
-                                                    {parcel.status === 'collected' ? 'Collected' : 'Ready For Collection'}
+                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                    parcel.status === 'collected'
+                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                                }`}>
+                                                    {parcel.status === 'collected' ? 'Collected' : 'Received'}
                                                 </span>
                                             </td>
                                         </tr>

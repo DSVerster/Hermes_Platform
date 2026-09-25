@@ -32,21 +32,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Financial Reports Route
     Route::get('financial-reports', [FinancialReportController::class, 'index'])->name('financial-reports');
 
-    // Settings Route (Fixed to lowercase 'settings' to match your folder)
+    // CUSTOM SETTINGS ROUTE
+    // This points to your custom page with tabs (Profile, App, Parcels, Appearance)
     Route::get('settings', function () {
         return Inertia::render('settings/Index');
     })->name('settings');
 
     Route::middleware('role:admin')->group(function () {
         Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
-        // CREATE STAFF
         Route::post('staff', [StaffController::class, 'store'])->name('staff.store');
-        // UPDATE STAFF
         Route::put('staff/{staff}', [StaffController::class, 'update'])->name('staff.update');
-        // DELETE STAFF
         Route::delete('staff/{staff}', [StaffController::class, 'destroy'])->name('staff.destroy');
     });
 });
 
-require __DIR__ . '/settings.php';
+// COMMENTED OUT: This line was loading the default Laravel settings pages
+// require __DIR__ . '/settings.php'; 
+
 require __DIR__ . '/auth.php';
