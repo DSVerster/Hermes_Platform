@@ -73,9 +73,9 @@ export default function Index({ title, notifications }: Props) {
                             <thead className="bg-gray-50/70 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <tr>
                                     <th className="p-4 pl-6"><Box className="h-3.5 w-3.5 inline mr-1" /> Parcel</th>
-                                    <th className="p-4"><Calendar className="h-3.5 w-3.5 inline mr-1" /> Date to Collect</th>
                                     <th className="p-4"><Send className="h-3.5 w-3.5 inline mr-1" /> Channel</th>
                                     <th className="p-4">Message Body</th>
+                                    <th className="p-4"><Calendar className="h-3.5 w-3.5 inline mr-1" /> Date to Collect</th>
                                     <th className="p-4">Status</th>
                                     <th className="p-4 pr-6 text-right">Actions</th>
                                 </tr>
@@ -83,6 +83,7 @@ export default function Index({ title, notifications }: Props) {
                             <tbody className="divide-y divide-gray-100 text-gray-700">
                                 {notifications.data.map((n) => (
                                     <tr key={n.notification_id} className="hover:bg-gray-50/80 transition-colors">
+                                        {/* Parcel Column */}
                                         <td className="p-4 pl-6 font-mono font-medium text-gray-900">
                                             {n.parcel ? (
                                                 <Link href={`/parcels/${n.parcel.parcel_id}`} className="text-[#e85d04] hover:underline font-semibold">
@@ -92,6 +93,20 @@ export default function Index({ title, notifications }: Props) {
                                                 <span className="text-gray-400">—</span>
                                             )}
                                         </td>
+                                        
+                                        {/* Channel Column */}
+                                        <td className="p-4">
+                                            <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wide">
+                                                {n.channel}
+                                            </span>
+                                        </td>
+
+                                        {/* Message Body Column */}
+                                        <td className="p-4 max-w-xs text-gray-600 truncate" title={n.message}>
+                                            {n.message}
+                                        </td>
+
+                                        {/* Date to Collect Column */}
                                         <td className="p-4 text-gray-600">
                                             {n.parcel?.date_collected ? (
                                                 <span className="font-medium text-emerald-600">{n.parcel.date_collected}</span>
@@ -99,14 +114,8 @@ export default function Index({ title, notifications }: Props) {
                                                 <span className="text-gray-400 italic">Not collected</span>
                                             )}
                                         </td>
-                                        <td className="p-4">
-                                            <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wide">
-                                                {n.channel}
-                                            </span>
-                                        </td>
-                                        <td className="p-4 max-w-xs text-gray-600 truncate" title={n.message}>
-                                            {n.message}
-                                        </td>
+
+                                        {/* Status Column */}
                                         <td className="p-4">
                                             <div className="flex items-center gap-1.5">
                                                 {n.parcel?.status === 'collected' ? (
@@ -128,9 +137,10 @@ export default function Index({ title, notifications }: Props) {
                                                 )}
                                             </div>
                                         </td>
+
+                                        {/* Actions Column */}
                                         <td className="p-4 pr-6 text-right">
                                             <div className="flex items-center justify-end space-x-1">
-                                                {/* Mark Collected Action Button */}
                                                 {n.parcel && n.parcel.status !== 'collected' && (
                                                     <button 
                                                         onClick={() => handleMarkCollected(n.notification_id)} 
