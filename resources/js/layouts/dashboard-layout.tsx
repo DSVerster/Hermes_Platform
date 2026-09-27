@@ -30,8 +30,10 @@ export default function DashboardLayout({
     title,
 }: PropsWithChildren<DashboardLayoutProps>) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { auth } = usePage<SharedData>().props;
+    const page = usePage<SharedData>();
+    const { auth } = page.props;
     const user = auth?.user as UserWithRole | undefined;
+    const currentPath = page.url.split('?')[0];
 
     // This effect ensures the correct theme is applied when the app loads
     useEffect(() => {
@@ -56,6 +58,9 @@ export default function DashboardLayout({
         { name: 'Settings', href: '/settings', icon: Settings },
     ];
 
+    const isNavItemActive = (href: string) =>
+        currentPath === href || currentPath.startsWith(`${href}/`);
+
     return (
         <div className="flex min-h-screen bg-[#f8f6fb] dark:bg-[#120b1c] transition-colors duration-300">
             {sidebarOpen && (
@@ -66,7 +71,8 @@ export default function DashboardLayout({
             )}
             <aside
                 className={`
-                    fixed lg:static inset-y-0 left-0 z-50 w-64
+                    fixed inset-y-0 left-0 z-50 w-64
+                    lg:sticky lg:top-0 lg:h-screen
                     bg-gradient-to-b from-[#2d1b4e] to-[#4a1a6b]
                     dark:from-[#150d24] dark:to-[#231440]
                     transform transition-transform duration-300
@@ -75,7 +81,7 @@ export default function DashboardLayout({
                 `}
             >
                 <div className="flex items-center gap-3 px-6 py-6 border-b border-white/10">
-                    <div className="h-12 w-12 overflow-hidden rounded-full bg-white/10 ring-2 ring-[#f5a623]/60 flex-shrink-0">
+                    <div className="h-16 w-16 overflow-hidden rounded-full bg-white/10 ring-2 ring-[#f5a623]/60 flex-shrink-0">
                         <img src="/images/LOGO.png" alt="Hermes" className="h-full w-full object-cover" />
                     </div>
                     <div>
@@ -86,31 +92,53 @@ export default function DashboardLayout({
                 <nav className="px-4 py-6 space-y-1 flex-1 overflow-y-auto">
                     {navItems
                         .filter((item) => !item.adminOnly || user?.email === 'admin@gmail.com' || user?.email_account === 'admin@gmail.com')
-                        .map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all group"
-                                onClick={() => setSidebarOpen(false)}
-                            >
-                                <item.icon className="h-5 w-5 group-hover:text-[#f5a623] transition-colors" />
-                                <span className="font-medium text-sm">{item.name}</span>
-                            </Link>
-                        ))}
+                        .map((item) => {
+                            const active = isNavItemActive(item.href);
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group ${
+                                        active
+                                            ? 'bg-white/10 text-white before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:w-1 before:rounded-r-full before:bg-[#f5a623] relative'
+                                            : 'text-white/70 hover:text-white hover:bg-white/10'
+                                    }`}
+                                    onClick={() => setSidebarOpen(false)}
+                                >
+                                    <item.icon
+                                        className={`h-5 w-5 transition-colors ${
+                                            active ? 'text-[#f5a623]' : 'group-hover:text-[#f5a623]'
+                                        }`}
+                                    />
+                                    <span className="font-medium text-sm">{item.name}</span>
+                                </Link>
+                            );
+                        })}
                 </nav>
                 <div className="mt-auto border-t border-white/10 bg-black/20">
                     <div className="px-4 py-2">
-                        {bottomNavItems.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all group"
-                                onClick={() => setSidebarOpen(false)}
-                            >
-                                <item.icon className="h-5 w-5 group-hover:text-[#f5a623] transition-colors" />
-                                <span className="font-medium text-sm">{item.name}</span>
-                            </Link>
-                        ))}
+                        {bottomNavItems.map((item) => {
+                            const active = isNavItemActive(item.href);
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group ${
+                                        active
+                                            ? 'bg-white/10 text-white before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:w-1 before:rounded-r-full before:bg-[#f5a623] relative'
+                                            : 'text-white/70 hover:text-white hover:bg-white/10'
+                                    }`}
+                                    onClick={() => setSidebarOpen(false)}
+                                >
+                                    <item.icon
+                                        className={`h-5 w-5 transition-colors ${
+                                            active ? 'text-[#f5a623]' : 'group-hover:text-[#f5a623]'
+                                        }`}
+                                    />
+                                    <span className="font-medium text-sm">{item.name}</span>
+                                </Link>
+                            );
+                        })}
                     </div>
                     <div className="p-4 space-y-2">
                         <div className="flex items-center gap-3 px-2 py-2">
