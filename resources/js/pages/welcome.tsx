@@ -16,7 +16,7 @@ export default function Welcome() {
                 <header>
                     <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6 lg:px-10">
                         <Link href="/" className="flex min-w-0 items-center gap-3">
-                            <img src="/images/LOGO.png" alt="" className="h-9 w-9 shrink-0 rounded-full" />
+                            <img src="/images/LOGO.png" alt="" className="h-16 w-16 shrink-0 rounded-full" />
                             <span className="truncate text-lg font-medium tracking-tight whitespace-nowrap text-[#2d1b4e] [font-family:'Fraunces',serif]">
                                 Hermes Platform
                             </span>
@@ -93,8 +93,8 @@ export default function Welcome() {
                                 <circle cx="180" cy="210" r="5" fill="#f5a623" opacity="0.8" />
                                 <circle cx="260" cy="60" r="5" fill="#f5a623" opacity="0.55" />
                             </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#2d1b4e] ring-4 ring-[#f5a623]/25 sm:h-32 sm:w-32">
+                            <div className="absolute left-[44%] top-[53%] -translate-x-1/2 -translate-y-1/2">
+                                <div className="flex h-32 w-32 items-center justify-center rounded-full bg-[#2d1b4e] ring-4 ring-[#f5a623]/25 sm:h-40 sm:w-40">
                                     <img src="/images/LOGO.png" alt="Hermes Platform" className="h-full w-full rounded-full object-cover" />
                                 </div>
                             </div>
