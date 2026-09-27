@@ -26,11 +26,11 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                         {/* Logo & Title */}
                         <div className="flex flex-col items-center gap-5">
                             <Link href={route('home')} className="group flex flex-col items-center gap-3 transition-transform hover:scale-105">
-                                <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[#2d1b4e] shadow-lg ring-4 ring-[#f5a623]/30 transition-all group-hover:ring-[#f5a623]/60">
+                                <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-[#2d1b4e] shadow-lg ring-4 ring-[#f5a623]/30 transition-all group-hover:ring-[#f5a623]/60">
                                     <img 
-                                        src="/images/logo.png" 
+                                        src="/images/LOGO.png" 
                                         alt="Hermes Logo" 
-                                        className="h-16 w-16 object-contain"
+                                        className="h-24 w-24 object-contain"
                                     />
                                 </div>
                                 <span className="sr-only">{title}</span>
