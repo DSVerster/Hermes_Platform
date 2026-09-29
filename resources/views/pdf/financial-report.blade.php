@@ -16,15 +16,32 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #ddd;
             padding-bottom: 10px;
+            width: 100%;
         }
 
-        .header h1 {
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .header-table td {
+            vertical-align: middle;
+            border: none;
+            padding: 0;
+        }
+
+        .logo {
+            max-height: 50px;
+            width: auto;
+        }
+
+        .title-area h1 {
             margin: 0;
             font-size: 22px;
             color: #111;
         }
 
-        .header p {
+        .title-area p {
             margin: 5px 0 0;
             color: #666;
             font-size: 12px;
@@ -97,8 +114,29 @@
 
 <body>
     <div class="header">
-        <h1>Financial Reports Overview</h1>
-        <p>Period: <strong>{{ $filter }}</strong> | Search Query: <strong>{{ $search ?: 'None' }}</strong> | Generated: {{ $dateGenerated }}</p>
+        <table class="header-table">
+            <tr>
+                <td>
+                    <div class="title-area">
+                        <h1>Financial Reports Overview</h1>
+                        <p>Period: <strong>{{ $filter }}</strong> | Search: <strong>{{ $search ?: 'None' }}</strong> | Generated: {{ $dateGenerated }}</p>
+                    </div>
+                </td>
+                <td style="text-align: right;">
+                    @php
+                    $path = public_path('images/LOGO.png');
+                    if (file_exists($path)) {
+                    $type = pathinfo($path, PATHINFO_EXTENSION);
+                    $data = file_get_contents($path);
+                    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                    }
+                    @endphp
+                    @if(isset($base64))
+                    <img src="{{ $base64 }}" class="logo" alt="Logo">
+                    @endif
+                </td>
+            </tr>
+        </table>
     </div>
 
     <table class="metrics">
@@ -130,7 +168,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($parcels as $parcel)
+            @forelse($parcels as $parcel)
             <tr>
                 <td>{{ $parcel->tracking_number }}</td>
                 <td>{{ $parcel->recipient_name }}</td>
@@ -142,7 +180,11 @@
                     </span>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="5" style="text-align: center; color: #777;">No parcel records found for this period.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </body>
