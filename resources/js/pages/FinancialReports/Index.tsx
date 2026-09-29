@@ -57,12 +57,25 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                             <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search..." className="flex-1 px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1e1333] text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
                             <button type="submit" className="px-6 py-2 bg-gray-800 dark:bg-[#4a1a6b] text-white rounded-lg hover:bg-gray-700 transition">Search</button>
                         </form>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center flex-wrap">
                             {['monthly', '6months', 'annually'].map((f) => (
                                 <button key={f} onClick={() => handleFilterChange(f)} className={`px-4 py-2 rounded-lg transition ${activeFilter === f ? 'bg-orange-500 text-white' : 'bg-white dark:bg-[#1e1333] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#4a1a6b] hover:bg-gray-50 dark:hover:bg-[#2d1b4e]'}`}>
                                     {f === 'monthly' ? 'Monthly' : f === '6months' ? '6 Months' : 'Annually'}
                                 </button>
                             ))}
+
+                            {/* Download PDF Button */}
+                            <a
+                                href={route('financial-reports.pdf', { filter: activeFilter, search: searchInput })}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Download PDF
+                            </a>
                         </div>
                     </div>
 

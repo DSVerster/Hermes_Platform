@@ -10,6 +10,8 @@ use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/financial-reports/pdf', [FinancialReportController::class, 'exportPdf'])->name('financial-reports.pdf');
+
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
