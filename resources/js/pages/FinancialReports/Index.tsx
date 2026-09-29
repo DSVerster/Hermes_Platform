@@ -37,7 +37,7 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
 
     const formatCurrency = (amount: number | string | null | undefined): string => {
         const numericAmount = Number(amount) || 0;
-        return numericAmount.toFixed(2);
+        return `R${numericAmount.toFixed(2)}`;
     };
 
     const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('en-ZA');
