@@ -35,7 +35,11 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
         router.get(route('financial-reports'), { search: searchInput, filter: newFilter });
     };
 
-    const formatCurrency = (amount: number) => `R ${amount.toFixed(2)}`;
+    const formatCurrency = (amount: number | string | null | undefined): string => {
+        const numericAmount = Number(amount) || 0;
+        return numericAmount.toFixed(2);
+    };
+
     const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('en-ZA');
 
     return (
