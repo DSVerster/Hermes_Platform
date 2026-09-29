@@ -10,6 +10,7 @@ interface Parcel {
     collection_fee: number;
     date_received: string;
 }
+
 interface Props {
     parcels: Parcel[];
     totalRevenue: number;
@@ -22,7 +23,15 @@ interface Props {
     completedCount: number;
 }
 
-export default function Index({ parcels, totalRevenue, pendingRevenue, completedRevenue, filter, search, totalParcels }: Props) {
+export default function Index({ 
+    parcels, 
+    totalRevenue, 
+    pendingRevenue, 
+    completedRevenue, 
+    filter, 
+    search, 
+    totalParcels 
+}: Props) {
     const [searchInput, setSearchInput] = useState(search);
     const [activeFilter, setActiveFilter] = useState(filter);
 
@@ -30,6 +39,7 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
         e.preventDefault();
         router.get(route('financial-reports'), { search: searchInput, filter: activeFilter });
     };
+
     const handleFilterChange = (newFilter: string) => {
         setActiveFilter(newFilter);
         router.get(route('financial-reports'), { search: searchInput, filter: newFilter });
@@ -54,12 +64,22 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
 
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                         <form onSubmit={handleSearch} className="flex-1 flex gap-2">
-                            <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search..." className="flex-1 px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1e1333] text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                            <input 
+                                type="text" 
+                                value={searchInput} 
+                                onChange={(e) => setSearchInput(e.target.value)} 
+                                placeholder="Search..." 
+                                className="flex-1 px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1e1333] text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent" 
+                            />
                             <button type="submit" className="px-6 py-2 bg-gray-800 dark:bg-[#4a1a6b] text-white rounded-lg hover:bg-gray-700 transition">Search</button>
                         </form>
                         <div className="flex gap-2 items-center flex-wrap">
                             {['monthly', '6months', 'annually'].map((f) => (
-                                <button key={f} onClick={() => handleFilterChange(f)} className={`px-4 py-2 rounded-lg transition ${activeFilter === f ? 'bg-orange-500 text-white' : 'bg-white dark:bg-[#1e1333] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#4a1a6b] hover:bg-gray-50 dark:hover:bg-[#2d1b4e]'}`}>
+                                <button 
+                                    key={f} 
+                                    onClick={() => handleFilterChange(f)} 
+                                    className={`px-4 py-2 rounded-lg transition ${activeFilter === f ? 'bg-orange-500 text-white' : 'bg-white dark:bg-[#1e1333] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#4a1a6b] hover:bg-gray-50 dark:hover:bg-[#2d1b4e]'}`}
+                                >
                                     {f === 'monthly' ? 'Monthly' : f === '6months' ? '6 Months' : 'Annually'}
                                 </button>
                             ))}
@@ -80,6 +100,7 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        {/* Total Revenue Card */}
                         <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow p-6 border border-gray-100 dark:border-[#2d1b4e]">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
@@ -90,6 +111,8 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalRevenue)}</h3>
                             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Total Revenue</p>
                         </div>
+
+                        {/* Awaiting Collection Card */}
                         <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow p-6 border border-gray-100 dark:border-[#2d1b4e]">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -100,6 +123,8 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(pendingRevenue)}</h3>
                             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Awaiting Collection</p>
                         </div>
+
+                        {/* Collected Card */}
                         <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow p-6 border border-gray-100 dark:border-[#2d1b4e]">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
@@ -112,6 +137,7 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                         </div>
                     </div>
 
+                    {/* Transactions Table Container */}
                     <div className="bg-white dark:bg-[#1e1333] rounded-lg shadow border border-gray-100 dark:border-[#2d1b4e]">
                         <div className="px-6 py-4 border-b border-gray-200 dark:border-[#2d1b4e] flex items-center justify-between">
                             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">All Parcels</h2>
@@ -129,23 +155,31 @@ export default function Index({ parcels, totalRevenue, pendingRevenue, completed
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white dark:bg-[#1e1333] divide-y divide-gray-200 dark:divide-[#2d1b4e]">
-                                    {parcels.map((parcel) => (
-                                        <tr key={parcel.parcel_id} className="hover:bg-gray-50 dark:hover:bg-[#2d1b4e]/50">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{parcel.tracking_number}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{parcel.recipient_name}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{formatDate(parcel.date_received)}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">{formatCurrency(parcel.collection_fee)}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                                    parcel.status === 'collected'
-                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                                                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                                                }`}>
-                                                    {parcel.status === 'collected' ? 'Collected' : 'Received'}
-                                                </span>
+                                    {parcels.length > 0 ? (
+                                        parcels.map((parcel) => (
+                                            <tr key={parcel.parcel_id} className="hover:bg-gray-50 dark:hover:bg-[#2d1b4e]/50">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{parcel.tracking_number}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{parcel.recipient_name}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{formatDate(parcel.date_received)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{formatCurrency(parcel.collection_fee)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <span className={`px-2 py-1 text-xs rounded-full ${
+                                                        parcel.status === 'completed' 
+                                                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                                                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                                                    }`}>
+                                                        {parcel.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                                No parcels found.
                                             </td>
                                         </tr>
-                                    ))}
+                                    )}
                                 </tbody>
                             </table>
                         </div>
