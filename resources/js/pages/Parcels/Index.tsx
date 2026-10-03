@@ -647,25 +647,36 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                         <div>
                             <label className={labelClass}>Parcel Type</label>
 
-                            <input
-                                type="text"
-                                className={inputClass}
-                                value={data.parcel_type}
-                                onChange={(e) => setData('parcel_type', e.target.value)}
-                                required
-                            />
+                            <select className={inputClass} value={data.parcel_type} onChange={(e) => setData('parcel_type', e.target.value)} required>
+                                <option value="" disabled>
+                                    Select a parcel type...
+                                </option>
+                                <option value="Box">Box</option>
+                                <option value="Envelope">Envelope</option>
+                                <option value="Flyer">Flyer / Bag</option>
+                                <option value="Pallet">Pallet</option>
+                            </select>
                         </div>
 
                         <div>
                             <label className={labelClass}>Storage Location</label>
 
-                            <input
-                                type="text"
+                            <select
                                 className={inputClass}
                                 value={data.storage_location}
                                 onChange={(e) => setData('storage_location', e.target.value)}
                                 required
-                            />
+                            >
+                                <option value="" disabled>
+                                    Select a location...
+                                </option>
+                                <option value="Shelf A1">Shelf A1</option>
+                                <option value="Shelf A2">Shelf A2</option>
+                                <option value="Shelf B1">Shelf B1</option>
+                                <option value="Shelf B2">Shelf B2</option>
+                                <option value="Floor Area">Floor Area</option>
+                                <option value="Secure Cage">Secure Cage</option>
+                            </select>
                         </div>
 
                         <div>
@@ -692,19 +703,6 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                                     </option>
                                 ))}
                             </select>
-                        </div>
-
-                        <div>
-                            <label className={labelClass}>Fee (R)</label>
-
-                            <input
-                                type="number"
-                                step="0.01"
-                                className={inputClass}
-                                value={data.collection_fee}
-                                onChange={(e) => setData('collection_fee', e.target.value)}
-                                required
-                            />
                         </div>
 
                         <div className="flex justify-end space-x-2 pt-2">

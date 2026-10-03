@@ -81,7 +81,7 @@ export default function Show({ title, parcel }: Props) {
                                 height={80}
                                 width={2}
                                 margin={10}
-                                renderAs="canvas"
+                                
                             />
                         </div>
                         <button
@@ -137,10 +137,7 @@ export default function Show({ title, parcel }: Props) {
                         <span className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">Collected</span>
                         <p className="text-gray-900 dark:text-white font-medium text-base mt-0.5">{parcel.date_collected ?? '—'}</p>
                     </div>
-                    <div>
-                        <span className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">Collection Fee</span>
-                        <p className="text-gray-900 dark:text-white font-bold text-base mt-0.5">R{parcel.collection_fee}</p>
-                    </div>
+                    
                 </section>
 
                 <section className="space-y-3 pt-2">
