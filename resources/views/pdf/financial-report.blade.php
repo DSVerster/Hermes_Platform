@@ -98,16 +98,8 @@
             border-radius: 4px;
             font-size: 10px;
             font-weight: bold;
-        }
-
-        .badge-collected {
             background: #d4edda;
             color: #155724;
-        }
-
-        .badge-received {
-            background: #cce5ff;
-            color: #004085;
         }
     </style>
 </head>
@@ -119,7 +111,11 @@
                 <td>
                     <div class="title-area">
                         <h1>Financial Reports Overview</h1>
-                        <p>Period: <strong>{{ $filter }}</strong> | Search: <strong>{{ $search ?: 'None' }}</strong> | Generated: {{ $dateGenerated }}</p>
+                        <p>
+                            Period: <strong>{{ $filter }}</strong>
+                            ({{ \Carbon\Carbon::parse($startDate)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($endDate)->format('Y-m-d') }})
+                            | Search: <strong>{{ $search ?: 'None' }}</strong> | Generated: {{ $dateGenerated }}
+                        </p>
                     </div>
                 </td>
                 <td style="text-align: right;">
@@ -146,24 +142,24 @@
                 <p>Total Revenue</p>
             </td>
             <td>
-                <h3>R{{ number_format($pendingRevenue, 2) }}</h3>
-                <p>Awaiting Collection (Received)</p>
+                <h3>{{ $collectedCount }}</h3>
+                <p>Packages Collected</p>
             </td>
             <td>
-                <h3>R{{ number_format($completedRevenue, 2) }}</h3>
-                <p>Collected Revenue</p>
+                <h3>R{{ number_format($feePerParcel, 2) }}</h3>
+                <p>Fee Per Parcel</p>
             </td>
         </tr>
     </table>
 
-    <h4 style="margin-bottom: 5px;">Transactions ({{ $totalParcels }} records)</h4>
+    <h4 style="margin-bottom: 5px;">Collected Parcels ({{ $collectedCount }} records)</h4>
     <table class="data">
         <thead>
             <tr>
                 <th>Tracking Number</th>
                 <th>Recipient</th>
-                <th>Date Received</th>
-                <th>Cost</th>
+                <th>Date Collected</th>
+                <th>Fee</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -172,17 +168,15 @@
             <tr>
                 <td>{{ $parcel->tracking_number }}</td>
                 <td>{{ $parcel->recipient_name }}</td>
-                <td>{{ \Carbon\Carbon::parse($parcel->date_received)->format('Y-m-d') }}</td>
-                <td>R{{ number_format($parcel->collection_fee, 2) }}</td>
+                <td>{{ \Carbon\Carbon::parse($parcel->date_collected)->format('Y-m-d') }}</td>
+                <td>R{{ number_format($feePerParcel, 2) }}</td>
                 <td>
-                    <span class="badge {{ $parcel->status === 'collected' ? 'badge-collected' : 'badge-received' }}">
-                        {{ ucfirst($parcel->status) }}
-                    </span>
+                    <span class="badge">Collected</span>
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="5" style="text-align: center; color: #777;">No parcel records found for this period.</td>
+                <td colspan="5" style="text-align: center; color: #777;">No collected parcels found for this period.</td>
             </tr>
             @endforelse
         </tbody>

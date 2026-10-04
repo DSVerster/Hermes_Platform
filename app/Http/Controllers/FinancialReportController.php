@@ -10,178 +10,83 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class FinancialReportController extends Controller
 {
-    public function index(Request $request)
+    private const COLLECTION_FEE = 50.00;
+
+    private function buildReport(Request $request): array
     {
         $filter = $request->input('filter', 'monthly');
         $search = $request->input('search', '');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Determine reporting period
-        |--------------------------------------------------------------------------
-        */
-
-        switch ($filter) {
-            case 'monthly':
-                // Current month
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
-
-            case '6months':
-                // Last 6 months including the current month
-                $startDate = Carbon::now()->subMonths(5)->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
-
-            case 'annually':
-                // Last 12 months including the current month
-                $startDate = Carbon::now()->subMonths(11)->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
-
-            default:
-                // Default to current month
-                $filter = 'monthly';
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
+        if ($filter === 'custom' && $request->filled(['start_date', 'end_date'])) {
+            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
+            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+        } else {
+            switch ($filter) {
+                case 'daily':
+                    $startDate = Carbon::now()->startOfDay();
+                    $endDate = Carbon::now()->endOfDay();
+                    break;
+                case 'quarterly':
+                    $startDate = Carbon::now()->subMonths(2)->startOfMonth();
+                    $endDate = Carbon::now()->endOfMonth();
+                    break;
+                case 'biannual':
+                    $startDate = Carbon::now()->subMonths(5)->startOfMonth();
+                    $endDate = Carbon::now()->endOfMonth();
+                    break;
+                case 'annually':
+                    $startDate = Carbon::now()->subMonths(11)->startOfMonth();
+                    $endDate = Carbon::now()->endOfMonth();
+                    break;
+                case 'monthly':
+                default:
+                    $filter = 'monthly';
+                    $startDate = Carbon::now()->startOfMonth();
+                    $endDate = Carbon::now()->endOfMonth();
+                    break;
+            }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Get parcels within selected period
-        |--------------------------------------------------------------------------
-        */
-
-        $query = Parcel::whereBetween(
-            'date_received',
-            [$startDate, $endDate]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Search
-        |--------------------------------------------------------------------------
-        */
+        $query = Parcel::where('status', 'collected')
+            ->whereBetween('date_collected', [$startDate, $endDate]);
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('tracking_number', 'like', "%{$search}%")
-                    ->orWhere('recipient_name', 'like', "%{$search}%")
-                    ->orWhere('collection_fee', 'like', "%{$search}%");
+                    ->orWhere('recipient_name', 'like', "%{$search}%");
             });
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Retrieve parcels
-        |--------------------------------------------------------------------------
-        */
+        $parcels = $query->orderBy('date_collected', 'desc')->get();
 
-        $parcels = $query
-            ->orderBy('date_received', 'desc')
-            ->get();
+        $collectedCount = $parcels->count();
+        $totalRevenue = $collectedCount * self::COLLECTION_FEE;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Calculate revenue
-        |--------------------------------------------------------------------------
-        */
-
-        $totalRevenue = $parcels->sum('collection_fee');
-
-        $receivedRevenue = $parcels
-            ->where('status', 'received')
-            ->sum('collection_fee');
-
-        $completedRevenue = $parcels
-            ->where('status', 'collected')
-            ->sum('collection_fee');
-
-        /*
-        |--------------------------------------------------------------------------
-        | Return Financial Reports page
-        |--------------------------------------------------------------------------
-        */
-
-        return Inertia::render('FinancialReports/Index', [
+        return [
             'parcels' => $parcels,
-
             'totalRevenue' => $totalRevenue,
-
-            'pendingRevenue' => $receivedRevenue,
-
-            'completedRevenue' => $completedRevenue,
-
+            'collectedCount' => $collectedCount,
+            'feePerParcel' => self::COLLECTION_FEE,
             'filter' => $filter,
-
             'search' => $search,
+            'startDate' => $startDate->toDateString(),
+            'endDate' => $endDate->toDateString(),
+        ];
+    }
 
-            'totalParcels' => $parcels->count(),
-
-            'pendingCount' => $parcels
-                ->where('status', 'received')
-                ->count(),
-
-            'completedCount' => $parcels
-                ->where('status', 'collected')
-                ->count(),
-        ]);
+    public function index(Request $request)
+    {
+        return Inertia::render('FinancialReports/Index', $this->buildReport($request));
     }
 
     public function exportPdf(Request $request)
     {
-        // Reuse filtering/search logic from index()
-        $filter = $request->input('filter', 'monthly');
-        $search = $request->input('search', '');
+        $report = $this->buildReport($request);
+        $report['filter'] = ucfirst($report['filter']);
+        $report['dateGenerated'] = Carbon::now()->format('Y-m-d H:i:s');
 
-        switch ($filter) {
-            case 'monthly':
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
-            case '6months':
-                $startDate = Carbon::now()->subMonths(5)->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
-            case 'annually':
-                $startDate = Carbon::now()->subMonths(11)->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
-            default:
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now()->endOfMonth();
-                break;
-        }
+        $pdf = Pdf::loadView('pdf.financial-report', $report);
 
-        $query = Parcel::whereBetween('date_received', [$startDate, $endDate]);
-
-        if (!empty($search)) {
-            $query->where(function ($q) use ($search) {
-                $q->where('tracking_number', 'like', "%{$search}%")
-                    ->orWhere('recipient_name', 'like', "%{$search}%")
-                    ->orWhere('collection_fee', 'like', "%{$search}%");
-            });
-        }
-
-        $parcels = $query->orderBy('date_received', 'desc')->get();
-
-        $totalRevenue = $parcels->sum('collection_fee');
-        $receivedRevenue = $parcels->where('status', 'received')->sum('collection_fee');
-        $completedRevenue = $parcels->where('status', 'collected')->sum('collection_fee');
-
-        $pdf = Pdf::loadView('pdf.financial-report', [
-            'parcels' => $parcels,
-            'totalRevenue' => $totalRevenue,
-            'pendingRevenue' => $receivedRevenue,
-            'completedRevenue' => $completedRevenue,
-            'filter' => ucfirst($filter),
-            'search' => $search,
-            'totalParcels' => $parcels->count(),
-            'dateGenerated' => Carbon::now()->format('Y-m-d H:i:s'),
-        ]);
-
-        return $pdf->download('financial-report-' . $filter . '-' . date('Y-m-d') . '.pdf');
+        return $pdf->download('financial-report-' . $request->input('filter', 'monthly') . '-' . date('Y-m-d') . '.pdf');
     }
 }

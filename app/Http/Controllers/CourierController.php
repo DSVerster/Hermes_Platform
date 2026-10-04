@@ -24,7 +24,11 @@ class CourierController extends Controller
 
     public function store(StoreCourierRequest $request)
     {
-        Courier::create($request->validated());
+        $courier = Courier::create($request->validated());
+
+        if ($request->wantsJson()) {
+            return response()->json($courier, 201);
+        }
 
         return redirect()->route('couriers.index')->with('success', 'Courier added.');
     }

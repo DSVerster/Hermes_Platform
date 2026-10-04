@@ -44,6 +44,11 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
     const scannerRef = useRef<Html5Qrcode | null>(null);
     const scannerContainerId = 'barcode-scanner-region';
 
+    const [courierList, setCourierList] = useState<Courier[]>(couriers);
+    const [showAddCourier, setShowAddCourier] = useState(false);
+    const [newCourierName, setNewCourierName] = useState('');
+    const [addingCourier, setAddingCourier] = useState(false);
+
     const statusColors: Record<string, string> = {
         received: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
         collected: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
@@ -75,6 +80,41 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
         collection_fee: '10.00',
     });
 
+    const getCookie = (name: string) => {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : '';
+    };
+
+    const handleQuickAddCourier = async () => {
+        if (!newCourierName.trim() || addingCourier) return;
+        setAddingCourier(true);
+
+        try {
+            const response = await fetch(route('couriers.store'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+                },
+                body: JSON.stringify({ name: newCourierName }),
+            });
+
+            if (!response.ok) throw new Error('Failed to create courier');
+
+            const newCourier: Courier = await response.json();
+            setCourierList((prev) => [...prev, newCourier]);
+            setData('courier_id', newCourier.courier_id.toString());
+            setNewCourierName('');
+            setShowAddCourier(false);
+        } catch {
+            alert('Could not add courier. Try again.');
+        } finally {
+            setAddingCourier(false);
+        }
+    };
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -84,6 +124,8 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
     const openCreate = () => {
         reset();
         clearErrors();
+        setShowAddCourier(false);
+        setNewCourierName('');
         setCreateOpen(true);
     };
 
@@ -429,6 +471,8 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                     if (!open) {
                         reset();
                         stopScanner();
+                        setShowAddCourier(false);
+                        setNewCourierName('');
                     }
                 }}
             >
@@ -556,13 +600,50 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                         <div>
                             <label className={labelClass}>Courier</label>
 
-                            <select className={inputClass} value={data.courier_id} onChange={(e) => setData('courier_id', e.target.value)} required>
-                                {couriers.map((c) => (
+                            <select
+                                className={inputClass}
+                                value={showAddCourier ? '__new__' : data.courier_id}
+                                onChange={(e) => {
+                                    if (e.target.value === '__new__') {
+                                        setShowAddCourier(true);
+                                    } else {
+                                        setShowAddCourier(false);
+                                        setData('courier_id', e.target.value);
+                                    }
+                                }}
+                                required
+                            >
+                                {courierList.map((c) => (
                                     <option key={c.courier_id} value={c.courier_id} className="text-gray-900 dark:text-white">
                                         {c.name}
                                     </option>
                                 ))}
+                                <option value="__new__" className="text-gray-900 dark:text-white">
+                                    + Add New Courier
+                                </option>
                             </select>
+
+                            {showAddCourier && (
+                                <div className="mt-2 flex gap-2">
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        placeholder="Courier name"
+                                        value={newCourierName}
+                                        onChange={(e) => setNewCourierName(e.target.value)}
+                                        autoFocus
+                                    />
+
+                                    <Button
+                                        type="button"
+                                        onClick={handleQuickAddCourier}
+                                        disabled={addingCourier || !newCourierName.trim()}
+                                        className="shrink-0 bg-[#2d1b4e] text-white hover:opacity-90"
+                                    >
+                                        {addingCourier ? '...' : 'Add'}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex justify-end space-x-2 pt-2">
@@ -573,6 +654,8 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                                     setCreateOpen(false);
                                     reset();
                                     stopScanner();
+                                    setShowAddCourier(false);
+                                    setNewCourierName('');
                                 }}
                                 className="rounded-lg border-gray-300 bg-white px-6 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-[#4a1a6b] dark:bg-[#2d1b4e] dark:text-gray-200 dark:hover:bg-[#3d2b5e]"
                             >
@@ -697,7 +780,7 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                             <label className={labelClass}>Courier</label>
 
                             <select className={inputClass} value={data.courier_id} onChange={(e) => setData('courier_id', e.target.value)} required>
-                                {couriers.map((c) => (
+                                {courierList.map((c) => (
                                     <option key={c.courier_id} value={c.courier_id} className="dark:bg-[#1e1333]">
                                         {c.name}
                                     </option>
