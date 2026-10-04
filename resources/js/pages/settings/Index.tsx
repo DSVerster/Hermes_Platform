@@ -1,19 +1,7 @@
-import { useState } from 'react';
-import { Head } from '@inertiajs/react';
 import DashboardLayout from '@/layouts/dashboard-layout';
-import {
-    User,
-    Building2,
-    Package,
-    Palette,
-    Sun,
-    Moon,
-    Save,
-    Mail,
-    Phone,
-    MapPin,
-    DollarSign,
-} from 'lucide-react';
+import { Head } from '@inertiajs/react';
+import { Building2, Mail, MapPin, Moon, Package, Palette, Phone, Save, Sun, User } from 'lucide-react';
+import { useState } from 'react';
 
 type Tab = 'profile' | 'application' | 'parcels' | 'appearance';
 
@@ -77,28 +65,24 @@ export default function Index() {
         <DashboardLayout title="Settings">
             <Head title="Settings" />
 
-            <div className="max-w-6xl mx-auto">
+            <div className="mx-auto max-w-6xl">
                 <div className="mb-8">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        Settings
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Manage your application preferences and configuration.
-                    </p>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+                    <p className="text-gray-600 dark:text-gray-400">Manage your application preferences and configuration.</p>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-6">
+                <div className="flex flex-col gap-6 lg:flex-row">
                     {/* Sidebar Tabs */}
-                    <div className="lg:w-64 flex-shrink-0">
-                        <nav className="flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0">
+                    <div className="flex-shrink-0 lg:w-64">
+                        <nav className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:pb-0">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left whitespace-nowrap transition-all ${
+                                    className={`flex items-center gap-3 rounded-lg px-4 py-3 text-left whitespace-nowrap transition-all ${
                                         activeTab === tab.id
-                                            ? 'bg-[#2d1b4e] dark:bg-[#4a1a6b] text-white'
-                                            : 'bg-white dark:bg-[#2d1b4e] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#3d2b5e]'
+                                            ? 'bg-[#2d1b4e] text-white dark:bg-[#4a1a6b]'
+                                            : 'bg-white text-gray-700 hover:bg-gray-50 dark:bg-[#2d1b4e] dark:text-gray-300 dark:hover:bg-[#3d2b5e]'
                                     }`}
                                 >
                                     <tab.icon className="h-5 w-5" />
@@ -112,62 +96,52 @@ export default function Index() {
                     <div className="flex-1">
                         {/* Profile Tab */}
                         {activeTab === 'profile' && (
-                            <div className="bg-white dark:bg-[#2d1b4e] rounded-lg shadow p-6 transition-colors duration-300">
-                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-                                    Profile Information
-                                </h2>
+                            <div className="rounded-lg bg-white p-6 shadow transition-colors duration-300 dark:bg-[#2d1b4e]">
+                                <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-white">Profile Information</h2>
                                 <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                First Name
-                                            </label>
+                                            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
                                             <input
                                                 type="text"
                                                 value={profile.name}
                                                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                                                className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                Surname
-                                            </label>
+                                            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Surname</label>
                                             <input
                                                 type="text"
                                                 value={profile.surname}
                                                 onChange={(e) => setProfile({ ...profile, surname: e.target.value })}
-                                                className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                             />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Email Address
-                                        </label>
+                                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
                                         <input
                                             type="email"
                                             value={profile.email}
                                             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Phone Number
-                                        </label>
+                                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
                                         <input
                                             type="tel"
                                             value={profile.phone}
                                             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                                             placeholder="+27 ..."
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                         />
                                     </div>
                                     <div className="pt-4">
                                         <button
                                             onClick={() => handleSave('Profile')}
-                                            className="flex items-center gap-2 px-6 py-2 bg-[#f5a623] text-white rounded-lg hover:bg-[#e09520] transition"
+                                            className="flex items-center gap-2 rounded-lg bg-[#f5a623] px-6 py-2 text-white transition hover:bg-[#e09520]"
                                         >
                                             <Save className="h-4 w-4" />
                                             Save Changes
@@ -179,68 +153,58 @@ export default function Index() {
 
                         {/* Application Tab */}
                         {activeTab === 'application' && (
-                            <div className="bg-white dark:bg-[#2d1b4e] rounded-lg shadow p-6 transition-colors duration-300">
-                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-                                    Application Settings
-                                </h2>
+                            <div className="rounded-lg bg-white p-6 shadow transition-colors duration-300 dark:bg-[#2d1b4e]">
+                                <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-white">Application Settings</h2>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Company Name
-                                        </label>
+                                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Company Name</label>
                                         <input
                                             type="text"
                                             value={app.companyName}
                                             onChange={(e) => setApp({ ...app, companyName: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Contact Email
-                                        </label>
+                                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Email</label>
                                         <div className="relative">
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                            <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                             <input
                                                 type="email"
                                                 value={app.contactEmail}
                                                 onChange={(e) => setApp({ ...app, contactEmail: e.target.value })}
-                                                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                                className="w-full rounded-lg border border-gray-300 bg-white py-2 pr-4 pl-10 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                             />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Contact Phone
-                                        </label>
+                                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Phone</label>
                                         <div className="relative">
-                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                            <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                             <input
                                                 type="tel"
                                                 value={app.contactPhone}
                                                 onChange={(e) => setApp({ ...app, contactPhone: e.target.value })}
-                                                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                                className="w-full rounded-lg border border-gray-300 bg-white py-2 pr-4 pl-10 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                             />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Business Address
-                                        </label>
+                                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Business Address</label>
                                         <div className="relative">
-                                            <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                            <MapPin className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
                                             <textarea
                                                 value={app.address}
                                                 onChange={(e) => setApp({ ...app, address: e.target.value })}
                                                 rows={3}
-                                                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                                className="w-full rounded-lg border border-gray-300 bg-white py-2 pr-4 pl-10 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                             />
                                         </div>
                                     </div>
                                     <div className="pt-4">
                                         <button
                                             onClick={() => handleSave('Application')}
-                                            className="flex items-center gap-2 px-6 py-2 bg-[#f5a623] text-white rounded-lg hover:bg-[#e09520] transition"
+                                            className="flex items-center gap-2 rounded-lg bg-[#f5a623] px-6 py-2 text-white transition hover:bg-[#e09520]"
                                         >
                                             <Save className="h-4 w-4" />
                                             Save Changes
@@ -251,95 +215,64 @@ export default function Index() {
                         )}
 
                         {/* Parcel Settings Tab */}
+
                         {activeTab === 'parcels' && (
-                            <div className="bg-white dark:bg-[#2d1b4e] rounded-lg shadow p-6 transition-colors duration-300">
-                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-                                    Parcel Configuration
-                                </h2>
+                            <div className="rounded-lg bg-white p-6 shadow transition-colors duration-300 dark:bg-[#2d1b4e]">
+                                <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-white">Parcel Configuration</h2>
+
                                 <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="flex items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-[#1a0f2e]">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                Default Collection Fee
-                                            </label>
-                                            <div className="relative">
-                                                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    value={parcelSettings.defaultFee}
-                                                    onChange={(e) => setParcelSettings({ ...parcelSettings, defaultFee: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
-                                                />
-                                            </div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                Standard fee applied to new parcels (in Rands)
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                Currency
-                                            </label>
-                                            <select
-                                                value={parcelSettings.currency}
-                                                onChange={(e) => setParcelSettings({ ...parcelSettings, currency: e.target.value })}
-                                                className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
-                                            >
-                                                <option value="ZAR">ZAR - South African Rand</option>
-                                                <option value="USD">USD - US Dollar</option>
-                                                <option value="EUR">EUR - Euro</option>
-                                                <option value="GBP">GBP - British Pound</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Currency Symbol
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={parcelSettings.currencySymbol}
-                                            onChange={(e) => setParcelSettings({ ...parcelSettings, currencySymbol: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#1a0f2e] rounded-lg">
-                                        <div>
-                                            <p className="font-medium text-gray-900 dark:text-white">
-                                                Auto-generate Tracking Numbers
-                                            </p>
+                                            <p className="font-medium text-gray-900 dark:text-white">Auto-generate Tracking Numbers</p>
+
                                             <p className="text-sm text-gray-500 dark:text-gray-400">
                                                 Automatically assign tracking numbers to new parcels
                                             </p>
                                         </div>
-                                        <label className="relative inline-flex items-center cursor-pointer">
+
+                                        <label className="relative inline-flex cursor-pointer items-center">
                                             <input
                                                 type="checkbox"
                                                 checked={parcelSettings.autoTrackingNumber}
-                                                onChange={(e) => setParcelSettings({ ...parcelSettings, autoTrackingNumber: e.target.checked })}
-                                                className="sr-only peer"
+                                                onChange={(e) =>
+                                                    setParcelSettings({
+                                                        ...parcelSettings,
+                                                        autoTrackingNumber: e.target.checked,
+                                                    })
+                                                }
+                                                className="peer sr-only"
                                             />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#f5a623]/20 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f5a623]"></div>
+
+                                            <div className="peer h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-[#f5a623] peer-focus:ring-4 peer-focus:ring-[#f5a623]/20 peer-focus:outline-none after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white dark:bg-gray-700"></div>
                                         </label>
                                     </div>
+
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                             Tracking Number Prefix
                                         </label>
+
                                         <input
                                             type="text"
                                             value={parcelSettings.trackingPrefix}
-                                            onChange={(e) => setParcelSettings({ ...parcelSettings, trackingPrefix: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-[#4a1a6b] rounded-lg bg-white dark:bg-[#1a0f2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#f5a623] focus:border-transparent"
+                                            onChange={(e) =>
+                                                setParcelSettings({
+                                                    ...parcelSettings,
+                                                    trackingPrefix: e.target.value,
+                                                })
+                                            }
+                                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-[#f5a623] dark:border-[#4a1a6b] dark:bg-[#1a0f2e] dark:text-white"
                                         />
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+
+                                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                             Prefix used for auto-generated tracking numbers (e.g., HP-12345678)
                                         </p>
                                     </div>
+
                                     <div className="pt-4">
                                         <button
                                             onClick={() => handleSave('Parcel Settings')}
-                                            className="flex items-center gap-2 px-6 py-2 bg-[#f5a623] text-white rounded-lg hover:bg-[#e09520] transition"
+                                            className="flex items-center gap-2 rounded-lg bg-[#f5a623] px-6 py-2 text-white transition hover:bg-[#e09520]"
                                         >
                                             <Save className="h-4 w-4" />
                                             Save Changes
@@ -351,78 +284,63 @@ export default function Index() {
 
                         {/* Appearance Tab */}
                         {activeTab === 'appearance' && (
-                            <div className="bg-white dark:bg-[#2d1b4e] rounded-lg shadow p-6 transition-colors duration-300">
-                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-                                    Appearance
-                                </h2>
+                            <div className="rounded-lg bg-white p-6 shadow transition-colors duration-300 dark:bg-[#2d1b4e]">
+                                <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-white">Appearance</h2>
                                 <div className="space-y-6">
                                     {/* Dark Mode Toggle */}
-                                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#1a0f2e] rounded-lg">
+                                    <div className="flex items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-[#1a0f2e]">
                                         <div className="flex items-center gap-3">
-                                            {isDark ? (
-                                                <Moon className="h-6 w-6 text-[#f5a623]" />
-                                            ) : (
-                                                <Sun className="h-6 w-6 text-[#f5a623]" />
-                                            )}
+                                            {isDark ? <Moon className="h-6 w-6 text-[#f5a623]" /> : <Sun className="h-6 w-6 text-[#f5a623]" />}
                                             <div>
-                                                <p className="font-medium text-gray-900 dark:text-white">
-                                                    Dark Mode
-                                                </p>
+                                                <p className="font-medium text-gray-900 dark:text-white">Dark Mode</p>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">
                                                     {isDark ? 'Dark theme is enabled' : 'Light theme is enabled'}
                                                 </p>
                                             </div>
                                         </div>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                checked={isDark}
-                                                onChange={toggleDarkMode}
-                                                className="sr-only peer"
-                                            />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#f5a623]/20 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f5a623]"></div>
+                                        <label className="relative inline-flex cursor-pointer items-center">
+                                            <input type="checkbox" checked={isDark} onChange={toggleDarkMode} className="peer sr-only" />
+                                            <div className="peer h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-[#f5a623] peer-focus:ring-4 peer-focus:ring-[#f5a623]/20 peer-focus:outline-none after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white dark:bg-gray-700"></div>
                                         </label>
                                     </div>
 
                                     {/* Theme Preview */}
                                     <div>
-                                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                                            Theme Preview
-                                        </p>
+                                        <p className="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Theme Preview</p>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div
-                                                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                                className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${
                                                     !isDark
                                                         ? 'border-[#f5a623] bg-white'
-                                                        : 'border-gray-200 dark:border-[#4a1a6b] bg-gray-50 dark:bg-[#1a0f2e]'
+                                                        : 'border-gray-200 bg-gray-50 dark:border-[#4a1a6b] dark:bg-[#1a0f2e]'
                                                 }`}
                                                 onClick={() => {
                                                     if (isDark) toggleDarkMode();
                                                 }}
                                             >
-                                                <div className="flex items-center gap-2 mb-2">
+                                                <div className="mb-2 flex items-center gap-2">
                                                     <Sun className="h-4 w-4 text-gray-600" />
                                                     <span className="text-sm font-medium text-gray-900">Light</span>
                                                 </div>
-                                                <div className="h-2 bg-gray-200 rounded mb-1"></div>
-                                                <div className="h-2 bg-gray-100 rounded w-3/4"></div>
+                                                <div className="mb-1 h-2 rounded bg-gray-200"></div>
+                                                <div className="h-2 w-3/4 rounded bg-gray-100"></div>
                                             </div>
                                             <div
-                                                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                                className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${
                                                     isDark
                                                         ? 'border-[#f5a623] bg-[#2d1b4e]'
-                                                        : 'border-gray-200 dark:border-[#4a1a6b] bg-gray-50 dark:bg-[#1a0f2e]'
+                                                        : 'border-gray-200 bg-gray-50 dark:border-[#4a1a6b] dark:bg-[#1a0f2e]'
                                                 }`}
                                                 onClick={() => {
                                                     if (!isDark) toggleDarkMode();
                                                 }}
                                             >
-                                                <div className="flex items-center gap-2 mb-2">
+                                                <div className="mb-2 flex items-center gap-2">
                                                     <Moon className="h-4 w-4 text-[#f5a623]" />
                                                     <span className="text-sm font-medium text-white">Dark</span>
                                                 </div>
-                                                <div className="h-2 bg-[#4a1a6b] rounded mb-1"></div>
-                                                <div className="h-2 bg-[#3d2b5e] rounded w-3/4"></div>
+                                                <div className="mb-1 h-2 rounded bg-[#4a1a6b]"></div>
+                                                <div className="h-2 w-3/4 rounded bg-[#3d2b5e]"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -430,7 +348,7 @@ export default function Index() {
                                     <div className="pt-4">
                                         <button
                                             onClick={() => handleSave('Appearance')}
-                                            className="flex items-center gap-2 px-6 py-2 bg-[#f5a623] text-white rounded-lg hover:bg-[#e09520] transition"
+                                            className="flex items-center gap-2 rounded-lg bg-[#f5a623] px-6 py-2 text-white transition hover:bg-[#e09520]"
                                         >
                                             <Save className="h-4 w-4" />
                                             Save Changes
