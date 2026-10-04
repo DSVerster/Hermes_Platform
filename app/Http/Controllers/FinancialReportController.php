@@ -10,7 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class FinancialReportController extends Controller
 {
-    private const COLLECTION_FEE = 50.00;
+    private const COLLECTION_FEE = 10.00;
 
     private function buildReport(Request $request): array
     {
