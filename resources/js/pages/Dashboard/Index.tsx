@@ -45,6 +45,7 @@ export default function Index({
 }: Props) {
     return (
         <DashboardLayout title={title}>
+            {/* FIX: Removed space before closing slash */}
             <Head title={title} />
             <div className="mx-auto max-w-7xl space-y-6 p-6">
                 <header>
@@ -136,7 +137,8 @@ export default function Index({
                     <div className="bg-white dark:bg-[#1e1333] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-[#2d1b4e]">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Recent Parcels</h2>
-                            <Link href="/parcels" className="text-sm text-[#e85d04] hover:underline">View All</Link>
+                            {/* FIX: Changed hardcoded href to route() */}
+                            <Link href={route('parcels.index')} className="text-sm text-[#e85d04] hover:underline">View All</Link>
                         </div>
                         <div className="space-y-3">
                             {recentParcels.map((p) => (

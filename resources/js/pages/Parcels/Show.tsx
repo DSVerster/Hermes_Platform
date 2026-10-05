@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import Barcode from 'react-barcode';
 import { Download, ArrowLeft } from 'lucide-react';
 
-// Define the Parcel type locally
 export interface Parcel {
     parcel_id: number;
     tracking_number: string;
@@ -46,13 +45,16 @@ const statusStyle: Record<string, string> = {
 
 export default function Show({ title, parcel }: Props) {
     const handleDownloadBarcode = () => {
-        const canvas = document.querySelector('#parcel-barcode') as HTMLCanvasElement;
-        if (canvas) {
-            const url = canvas.toDataURL('image/png');
+        const svgElement = document.querySelector('#parcel-barcode svg') as SVGSVGElement;
+        if (svgElement) {
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
             const link = document.createElement('a');
-            link.download = `Barcode-${parcel.tracking_number}.png`;
+            link.download = `Barcode-${parcel.tracking_number}.svg`;
             link.href = url;
             link.click();
+            URL.revokeObjectURL(url);
         }
     };
 
@@ -62,14 +64,13 @@ export default function Show({ title, parcel }: Props) {
             <div className="mx-auto max-w-3xl space-y-6 p-6 bg-white dark:bg-[#1e1333] rounded-2xl shadow-sm border border-gray-100 dark:border-[#2d1b4e]">
                 <div className="flex items-center justify-between">
                     <div>
-                        <Link href="/parcels" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium underline flex items-center gap-1">
+                        <Link href={route('parcels.index')} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium underline flex items-center gap-1">
                             <ArrowLeft className="h-4 w-4" />
                             Back to Parcels
                         </Link>
                         <h1 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
                     </div>
                 </div>
-
                 {/* Barcode Section */}
                 <section className="rounded-xl border border-gray-200 dark:border-[#2d1b4e] bg-gray-50 dark:bg-[#120b1c] p-6">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -81,7 +82,6 @@ export default function Show({ title, parcel }: Props) {
                                 height={80}
                                 width={2}
                                 margin={10}
-                                
                             />
                         </div>
                         <button
@@ -93,7 +93,6 @@ export default function Show({ title, parcel }: Props) {
                         </button>
                     </div>
                 </section>
-
                 <section className="grid grid-cols-2 gap-6 rounded-xl border border-gray-200 dark:border-[#2d1b4e] bg-white dark:bg-[#1e1333] p-6 shadow-sm">
                     <div>
                         <span className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">Tracking Number</span>
@@ -137,9 +136,7 @@ export default function Show({ title, parcel }: Props) {
                         <span className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">Collected</span>
                         <p className="text-gray-900 dark:text-white font-medium text-base mt-0.5">{parcel.date_collected ?? '—'}</p>
                     </div>
-                    
                 </section>
-
                 <section className="space-y-3 pt-2">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Notifications</h2>
                     {(parcel.notifications ?? []).map((n) => (

@@ -10,7 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class FinancialReportController extends Controller
 {
-    private const COLLECTION_FEE = 10.00;
+    private const DEFAULT_COLLECTION_FEE = 10.00;
 
     private function buildReport(Request $request): array
     {
@@ -53,20 +53,23 @@ class FinancialReportController extends Controller
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('tracking_number', 'like', "%{$search}%")
-                    ->orWhere('recipient_name', 'like', "%{$search}%");
+                  ->orWhere('recipient_name', 'like', "%{$search}%");
             });
         }
 
         $parcels = $query->orderBy('date_collected', 'desc')->get();
-
+        
         $collectedCount = $parcels->count();
-        $totalRevenue = $collectedCount * self::COLLECTION_FEE;
+        
+        // FIX: Calculate actual revenue from the database instead of hardcoding
+        $totalRevenue = $parcels->sum('collection_fee');
+        $feePerParcel = $collectedCount > 0 ? ($totalRevenue / $collectedCount) : self::DEFAULT_COLLECTION_FEE;
 
         return [
             'parcels' => $parcels,
             'totalRevenue' => $totalRevenue,
             'collectedCount' => $collectedCount,
-            'feePerParcel' => self::COLLECTION_FEE,
+            'feePerParcel' => $feePerParcel,
             'filter' => $filter,
             'search' => $search,
             'startDate' => $startDate->toDateString(),
@@ -84,9 +87,9 @@ class FinancialReportController extends Controller
         $report = $this->buildReport($request);
         $report['filter'] = ucfirst($report['filter']);
         $report['dateGenerated'] = Carbon::now()->format('Y-m-d H:i:s');
-
+        
         $pdf = Pdf::loadView('pdf.financial-report', $report);
-
+        
         return $pdf->download('financial-report-' . $request->input('filter', 'monthly') . '-' . date('Y-m-d') . '.pdf');
     }
 }

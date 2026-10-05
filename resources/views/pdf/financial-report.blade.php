@@ -1,159 +1,68 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Financial Report</title>
     <style>
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #333;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .header {
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-            width: 100%;
-        }
-
-        .header-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .header-table td {
-            vertical-align: middle;
-            border: none;
-            padding: 0;
-        }
-
-        .logo {
-            max-height: 50px;
-            width: auto;
-        }
-
-        .title-area h1 {
-            margin: 0;
-            font-size: 22px;
-            color: #111;
-        }
-
-        .title-area p {
-            margin: 5px 0 0;
-            color: #666;
-            font-size: 12px;
-        }
-
-        .metrics {
-            width: 100%;
-            margin-bottom: 20px;
-            border-collapse: collapse;
-        }
-
-        .metrics td {
-            width: 33.33%;
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 12px;
-            vertical-align: top;
-        }
-
-        .metrics h3 {
-            margin: 0 0 5px 0;
-            font-size: 18px;
-            color: #111;
-        }
-
-        .metrics p {
-            margin: 0;
-            font-size: 11px;
-            color: #555;
-        }
-
-        table.data {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        table.data th,
-        table.data td {
-            border: 1px solid #ddd;
-            padding: 8px 10px;
-            text-align: left;
-            font-size: 12px;
-        }
-
-        table.data th {
-            background-color: #f1f1f1;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .badge {
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
-            background: #d4edda;
-            color: #155724;
-        }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #333; margin: 0; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { max-width: 120px; margin-bottom: 15px; }
+        h1 { margin: 0; font-size: 22px; color: #1a202c; }
+        .meta { margin-top: 10px; font-size: 11px; color: #666; }
+        .stats-table { width: 100%; margin-bottom: 30px; border-collapse: collapse; }
+        .stats-table td { border: 1px solid #e2e8f0; padding: 15px; text-align: center; width: 33.33%; background-color: #f8fafc; }
+        .stats-value { font-size: 20px; font-weight: bold; color: #2d3748; margin-bottom: 5px; }
+        .stats-label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }
+        h3 { font-size: 16px; color: #2d3748; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { background-color: #f7fafc; color: #4a5568; padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0; font-size: 11px; text-transform: uppercase; }
+        .data-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 11px; }
+        .status-badge { background-color: #c6f6d5; color: #22543d; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
     </style>
 </head>
-
 <body>
+
     <div class="header">
-        <table class="header-table">
-            <tr>
-                <td>
-                    <div class="title-area">
-                        <h1>Financial Reports Overview</h1>
-                        <p>
-                            Period: <strong>{{ $filter }}</strong>
-                            ({{ \Carbon\Carbon::parse($startDate)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($endDate)->format('Y-m-d') }})
-                            | Search: <strong>{{ $search ?: 'None' }}</strong> | Generated: {{ $dateGenerated }}
-                        </p>
-                    </div>
-                </td>
-                <td style="text-align: right;">
-                    @php
-                    $path = public_path('images/LOGO.png');
-                    if (file_exists($path)) {
-                    $type = pathinfo($path, PATHINFO_EXTENSION);
-                    $data = file_get_contents($path);
-                    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                    }
-                    @endphp
-                    @if(isset($base64))
-                    <img src="{{ $base64 }}" class="logo" alt="Logo">
-                    @endif
-                </td>
-            </tr>
-        </table>
+        @php
+            $path = public_path('images/LOGO.png');
+            $base64 = '';
+            if (file_exists($path)) {
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            }
+        @endphp
+        
+        @if($base64)
+            <img src="{{ $base64 }}" class="logo" alt="Hermes Platform Logo">
+        @endif
+
+        <h1>Financial Reports Overview</h1>
+        <div class="meta">
+            <p>Period: {{ ucfirst($filter) }} ({{ \Carbon\Carbon::parse($startDate)->format('Y-m-d') }} to {{ \Carbon\Carbon::parse($endDate)->format('Y-m-d') }})</p>
+            <p>Search: {{ $search ?: 'None' }} | Generated: {{ $dateGenerated }}</p>
+        </div>
     </div>
 
-    <table class="metrics">
+    <table class="stats-table">
         <tr>
             <td>
-                <h3>R{{ number_format($totalRevenue, 2) }}</h3>
-                <p>Total Revenue</p>
+                <div class="stats-value">R{{ number_format($totalRevenue, 2) }}</div>
+                <div class="stats-label">Total Revenue</div>
             </td>
             <td>
-                <h3>{{ $collectedCount }}</h3>
-                <p>Packages Collected</p>
+                <div class="stats-value">{{ $collectedCount }}</div>
+                <div class="stats-label">Packages Collected</div>
             </td>
             <td>
-                <h3>R{{ number_format($feePerParcel, 2) }}</h3>
-                <p>Fee Per Parcel</p>
+                <div class="stats-value">R{{ number_format($feePerParcel, 2) }}</div>
+                <div class="stats-label">Avg Fee Per Parcel</div>
             </td>
         </tr>
     </table>
 
-    <h4 style="margin-bottom: 5px;">Collected Parcels ({{ $collectedCount }} records)</h4>
-    <table class="data">
+    <h3>Collected Parcels ({{ $collectedCount }} records)</h3>
+    <table class="data-table">
         <thead>
             <tr>
                 <th>Tracking Number</th>
@@ -169,18 +78,18 @@
                 <td>{{ $parcel->tracking_number }}</td>
                 <td>{{ $parcel->recipient_name }}</td>
                 <td>{{ \Carbon\Carbon::parse($parcel->date_collected)->format('Y-m-d') }}</td>
-                <td>R{{ number_format($feePerParcel, 2) }}</td>
-                <td>
-                    <span class="badge">Collected</span>
-                </td>
+                <td>R{{ number_format($parcel->collection_fee, 2) }}</td>
+                <td><span class="status-badge">Collected</span></td>
             </tr>
             @empty
             <tr>
-                <td colspan="5" style="text-align: center; color: #777;">No collected parcels found for this period.</td>
+                <td colspan="5" style="text-align: center; padding: 20px; color: #718096;">
+                    No collected parcels found for this period.
+                </td>
             </tr>
             @endforelse
         </tbody>
     </table>
-</body>
 
+</body>
 </html>

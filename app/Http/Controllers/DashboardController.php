@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Parcel;
@@ -19,10 +20,10 @@ class DashboardController extends Controller
             $date = Carbon::now()->subDays($i)->format('Y-m-d');
             $label = Carbon::now()->subDays($i)->format('M d');
 
-            $received = Parcel::where('status', 'received')
-                ->whereDate('date_received', $date)
-                ->count();
-
+            // FIX: Removed ->where('status', 'received') so it counts ALL parcels received on that date
+            // regardless of their current status (received or collected)
+            $received = Parcel::whereDate('date_received', $date)->count();
+            
             $collected = Parcel::where('status', 'collected')
                 ->whereDate('date_collected', $date)
                 ->count();

@@ -11,10 +11,8 @@ class Parcel extends Model
 {
     use HasFactory;
 
-    // 1. Tell Laravel the true name of your primary key column
     protected $primaryKey = 'parcel_id';
 
-    // 2. Allow all the database columns to accept data entries
     protected $fillable = [
         'courier_id',
         'staff_id',
@@ -30,27 +28,23 @@ class Parcel extends Model
         'collection_fee',
     ];
 
-    /**
-     * Get the courier that handles this specific parcel.
-     */
+    // FIX: Added date casts to ensure proper comparisons in controllers
+    protected $casts = [
+        'date_received' => 'date',
+        'date_collected' => 'date',
+        'collection_fee' => 'decimal:2',
+    ];
+
     public function courier(): BelongsTo
     {
-        // Points to Courier model using your custom courier_id column
         return $this->belongsTo(Courier::class, 'courier_id', 'courier_id');
     }
 
-    /**
-     * Get the staff member who processed this specific parcel.
-     */
     public function staff(): BelongsTo
     {
-        // Points to Staff model using your custom staff_id column
         return $this->belongsTo(Staff::class, 'staff_id', 'staff_id');
     }
 
-    /**
-     * Get the notifications sent for this parcel.
-     */
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class, 'parcel_id', 'parcel_id');

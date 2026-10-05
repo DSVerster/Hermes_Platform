@@ -8,6 +8,7 @@ interface Parcel {
     recipient_name: string;
     status: string;
     date_collected: string;
+    collection_fee: number | string; // FIX: Added collection_fee
 }
 
 interface Props {
@@ -105,7 +106,6 @@ export default function Index({
                                     Search
                                 </button>
                             </form>
-
                             <a
                                 href={pdfHref}
                                 target="_blank"
@@ -138,7 +138,6 @@ export default function Index({
                                     {p.label}
                                 </button>
                             ))}
-
                             <button
                                 onClick={() => setShowCustom((v) => !v)}
                                 className={`rounded-lg px-4 py-2 transition ${
@@ -195,12 +194,11 @@ export default function Index({
                                         />
                                     </svg>
                                 </div>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">R{feePerParcel.toFixed(2)} / parcel</span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">Avg R{feePerParcel.toFixed(2)} / parcel</span>
                             </div>
                             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalRevenue)}</h3>
                             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
                         </div>
-
                         <div className="rounded-lg border border-gray-100 bg-white p-6 shadow dark:border-[#2d1b4e] dark:bg-[#1e1333]">
                             <div className="mb-4 flex items-center justify-between">
                                 <div className="rounded-lg bg-green-100 p-3 dark:bg-green-900/30">
@@ -213,7 +211,6 @@ export default function Index({
                             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{collectedCount}</h3>
                             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Packages Collected</p>
                         </div>
-
                         <div className="rounded-lg border border-gray-100 bg-white p-6 shadow dark:border-[#2d1b4e] dark:bg-[#1e1333]">
                             <div className="mb-4 flex items-center justify-between">
                                 <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900/30">
@@ -260,7 +257,8 @@ export default function Index({
                                                     {formatDate(parcel.date_collected)}
                                                 </td>
                                                 <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
-                                                    {formatCurrency(feePerParcel)}
+                                                    {/* FIX: Display actual parcel fee */}
+                                                    {formatCurrency(parcel.collection_fee)}
                                                 </td>
                                             </tr>
                                         ))
