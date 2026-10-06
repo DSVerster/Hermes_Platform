@@ -14,18 +14,19 @@ class Parcel extends Model
     protected $primaryKey = 'parcel_id';
 
     protected $fillable = [
-        'courier_id',
-        'staff_id',
-        'recipient_name',
-        'recipient_phone',
-        'tracking_number',
-        'parcel_type',
-        'courier_service',
-        'date_received',
-        'date_collected',
-        'storage_location',
-        'status',
-        'collection_fee',
+    'courier_id',
+    'staff_id',
+    'recipient_name',
+    'recipient_phone',
+    'recipient_email',
+    'tracking_number',
+    'parcel_type',
+    'courier_service',
+    'date_received',
+    'date_collected',
+    'storage_location',
+    'status',
+    'collection_fee',
     ];
 
     // FIX: Added date casts to ensure proper comparisons in controllers

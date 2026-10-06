@@ -4,20 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreParcelRequest;
 use App\Http\Requests\UpdateParcelRequest;
+use App\Mail\ParcelReadyForCollection;
 use App\Models\Courier;
+use App\Models\Notification;
 use App\Models\Parcel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class ParcelController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Parcel::with(['courier', 'staff'])->latest('date_received');
+        $query = Parcel::with(['courier', 'staff'])->latest('created_at');
 
         if ($request->filled('search')) {
             $search = $request->search;
+
             $query->where(function ($q) use ($search) {
                 $q->where('tracking_number', 'like', "%{$search}%")
                   ->orWhere('recipient_name', 'like', "%{$search}%");
@@ -45,14 +49,44 @@ class ParcelController extends Controller
     public function store(StoreParcelRequest $request)
     {
         $validated = $request->validated();
-        $validated['staff_id'] = Auth::id(); // Assuming Auth::id() returns staff_id based on your auth setup
 
-        Parcel::create($validated);
+        $sendEmail = $request->boolean('send_email');
 
-        return redirect()->route('parcels.index')->with('success', 'Parcel created successfully.');
+        unset($validated['send_email']);
+
+        $validated['staff_id'] = Auth::id();
+        $validated['collection_fee'] = 10.00;
+
+        $parcel = Parcel::create($validated);
+
+        if ($sendEmail && !empty($parcel->recipient_email)) {
+            $notification = Notification::create([
+                'parcel_id' => $parcel->parcel_id,
+                'channel' => 'email',
+                'message' => 'Your package is ready for collection.',
+                'status' => 'pending',
+            ]);
+
+            try {
+                Mail::to($parcel->recipient_email)
+                    ->send(new ParcelReadyForCollection($parcel));
+
+                $notification->update([
+                    'status' => 'sent',
+                    'sent_at' => now(),
+                ]);
+            } catch (\Throwable $e) {
+                $notification->update([
+                    'status' => 'failed',
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('parcels.index')
+            ->with('success', 'Parcel created successfully.');
     }
 
-    // FIX: Changed from $id to implicit model binding $parcel
     public function show(Parcel $parcel)
     {
         $parcel->load(['courier', 'staff', 'notifications']);
@@ -70,26 +104,30 @@ class ParcelController extends Controller
         ]);
     }
 
-    // FIX: Changed from $id to implicit model binding $parcel
     public function update(UpdateParcelRequest $request, Parcel $parcel)
     {
         $validated = $request->validated();
+
         $parcel->update($validated);
 
-        return redirect()->route('parcels.index')->with('success', 'Parcel updated successfully.');
+        return redirect()
+            ->route('parcels.index')
+            ->with('success', 'Parcel updated successfully.');
     }
 
-    // FIX: Changed from $id to implicit model binding $parcel
     public function destroy(Parcel $parcel)
     {
         $parcel->delete();
 
-        return redirect()->route('parcels.index')->with('success', 'Parcel deleted successfully.');
+        return redirect()
+            ->route('parcels.index')
+            ->with('success', 'Parcel deleted successfully.');
     }
 
     public function apiLookup(Request $request)
     {
-        // Your existing API lookup logic
-        return response()->json(['message' => 'API lookup endpoint']);
+        return response()->json([
+            'message' => 'API lookup endpoint',
+        ]);
     }
 }
