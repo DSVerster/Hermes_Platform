@@ -64,7 +64,7 @@ export default function Show({ title, notification }: Props) {
 
                         <p className="font-medium text-gray-800">
                             {notification.parcel?.date_collected ? (
-                                notification.parcel.date_collected
+                                new Date(notification.parcel.date_collected).toISOString().split('T')[0]
                             ) : (
                                 <span className="text-gray-400 italic">Not collected yet</span>
                             )}
@@ -106,7 +106,7 @@ export default function Show({ title, notification }: Props) {
 
                         <p className="font-medium text-gray-800">
                             {isCollected && notification.parcel?.date_collected ? (
-                                notification.parcel.date_collected
+                                new Date(notification.parcel.date_collected).toISOString().split('T')[0]
                             ) : (
                                 <span className="text-gray-400 italic">—</span>
                             )}
