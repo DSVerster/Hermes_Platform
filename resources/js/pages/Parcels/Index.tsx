@@ -371,7 +371,7 @@ export default function Index({ title, parcels, couriers = [], filters }: Props)
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
-                                                {parcel.date_received ? new Date(parcel.date_received).toLocaleDateString() : 'N/A'}
+                                                {parcel.date_received ? new Date(parcel.date_received).toISOString().split('T')[0] : 'N/A'}
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2">
