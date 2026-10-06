@@ -116,10 +116,12 @@ export default function Index({ title, notifications }: Props) {
                                         {/* Date to Collect Column */}
                                         <td className="p-4 text-gray-600">
                                             {n.parcel?.date_collected ? (
-                                                <span className="font-medium text-emerald-600">{n.parcel.date_collected}</span>
-                                            ) : (
-                                                <span className="text-gray-400 italic">Not collected</span>
-                                            )}
+                                               <span className="font-medium text-emerald-600">
+                                                 {new Date(n.parcel.date_collected).toISOString().split('T')[0]}
+                                               </span>
+                                             ) : (
+                                               <span className="text-gray-400 italic">Not collected</span>
+                                             )}
                                         </td>
 
                                         {/* Status Column */}
