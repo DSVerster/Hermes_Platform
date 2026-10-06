@@ -130,11 +130,11 @@ export default function Show({ title, parcel }: Props) {
                     </div>
                     <div>
                         <span className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">Received</span>
-                        <p className="text-gray-900 dark:text-white font-medium text-base mt-0.5">{parcel.date_received ?? '—'}</p>
+                        <p className="text-gray-900 dark:text-white font-medium text-base mt-0.5">{parcel.date_received ? new Date(parcel.date_received).toLocaleDateString('fr-CA') : '—'}</p>
                     </div>
                     <div>
                         <span className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">Collected</span>
-                        <p className="text-gray-900 dark:text-white font-medium text-base mt-0.5">{parcel.date_collected ?? '—'}</p>
+                        <p className="text-gray-900 dark:text-white font-medium text-base mt-0.5">{parcel.date_collected ? new Date(parcel.date_collected).toLocaleDateString('fr-CA') : '—'}</p>
                     </div>
                 </section>
                 <section className="space-y-3 pt-2">
