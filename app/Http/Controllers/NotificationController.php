@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ParcelCollected;
 use App\Mail\ParcelReadyForCollection;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Mail;
@@ -27,6 +28,24 @@ class NotificationController extends Controller
     }
 
     /**
+     * Display successfully sent message history.
+     */
+    public function history()
+    {
+        $messages = Notification::with(
+            'parcel:parcel_id,tracking_number,recipient_name,recipient_email,status,date_collected'
+        )
+            ->whereIn('status', ['sent', 'delivered'])
+            ->orderByDesc('sent_at')
+            ->paginate(20);
+
+        return Inertia::render('Notifications/History', [
+            'title' => 'Message History',
+            'messages' => $messages,
+        ]);
+    }
+
+    /**
      * Display a single notification.
      */
     public function show(Notification $notification)
@@ -46,7 +65,6 @@ class NotificationController extends Controller
     {
         $notification->load('parcel');
 
-        // Make sure the notification has an associated parcel.
         if (!$notification->parcel) {
             return back()->with(
                 'error',
@@ -54,7 +72,6 @@ class NotificationController extends Controller
             );
         }
 
-        // Make sure the parcel has an email address.
         if (empty($notification->parcel->recipient_email)) {
             return back()->with(
                 'error',
@@ -63,13 +80,28 @@ class NotificationController extends Controller
         }
 
         try {
-            // Send the email to the recipient email stored on the parcel.
-            Mail::to($notification->parcel->recipient_email)
-                ->send(
-                    new ParcelReadyForCollection($notification->parcel)
-                );
+            /*
+             * If this is the collection notification,
+             * resend the collection confirmation email.
+             */
+            if (
+                $notification->message ===
+                'Your parcel has been collected. Thank you for doing business with us.'
+            ) {
+                Mail::to($notification->parcel->recipient_email)
+                    ->send(
+                        new ParcelCollected($notification->parcel)
+                    );
+            } else {
+                /*
+                 * Otherwise, resend the ready-for-collection email.
+                 */
+                Mail::to($notification->parcel->recipient_email)
+                    ->send(
+                        new ParcelReadyForCollection($notification->parcel)
+                    );
+            }
 
-            // Update the existing notification record.
             $notification->update([
                 'status' => 'sent',
                 'sent_at' => now(),
@@ -80,7 +112,6 @@ class NotificationController extends Controller
                 'Notification email sent successfully.'
             );
         } catch (\Throwable $e) {
-            // Mark the notification as failed if sending fails.
             $notification->update([
                 'status' => 'failed',
             ]);
@@ -93,7 +124,8 @@ class NotificationController extends Controller
     }
 
     /**
-     * Mark the parcel associated with a notification as collected.
+     * Mark the parcel as collected and send
+     * a collection confirmation email.
      */
     public function markCollected(Notification $notification)
     {
@@ -106,14 +138,82 @@ class NotificationController extends Controller
             );
         }
 
-        $notification->parcel->update([
+        $parcel = $notification->parcel;
+
+        /*
+         * Check if the parcel has already been collected.
+         */
+        if ($parcel->status === 'collected') {
+            return back()->with(
+                'error',
+                'This parcel has already been marked as collected.'
+            );
+        }
+
+        /*
+         * Update the parcel.
+         */
+        $parcel->update([
             'status' => 'collected',
             'date_collected' => now()->toDateString(),
         ]);
 
+        /*
+         * Send the collection confirmation email
+         * if the parcel has an email address.
+         */
+        if (!empty($parcel->recipient_email)) {
+            try {
+                Mail::to($parcel->recipient_email)
+                    ->send(
+                        new ParcelCollected($parcel)
+                    );
+
+                /*
+                 * Create a NEW notification record for
+                 * the collection email.
+                 */
+                Notification::create([
+                    'parcel_id' => $parcel->parcel_id,
+                    'channel' => 'email',
+                    'message' => 'Your parcel has been collected. Thank you for doing business with us.',
+                    'status' => 'sent',
+                    'sent_at' => now(),
+                ]);
+            } catch (\Throwable $e) {
+                /*
+                 * The parcel is still marked as collected,
+                 * but the email notification is recorded
+                 * as failed.
+                 */
+                Notification::create([
+                    'parcel_id' => $parcel->parcel_id,
+                    'channel' => 'email',
+                    'message' => 'Your parcel has been collected. Thank you for doing business with us.',
+                    'status' => 'failed',
+                    'sent_at' => null,
+                ]);
+
+                return back()->with(
+                    'error',
+                    'Parcel was marked as collected, but the collection email could not be sent.'
+                );
+            }
+        }
+
+        /*
+         * No recipient email was provided.
+         */
+        if (empty($parcel->recipient_email)) {
+            return back()->with(
+                'success',
+                'Parcel marked as collected. No recipient email address was available.'
+            );
+        }
+
         return back()->with(
             'success',
-            'Parcel marked as collected.'
+            'Parcel marked as collected and collection email sent successfully.'
         );
     }
 }
