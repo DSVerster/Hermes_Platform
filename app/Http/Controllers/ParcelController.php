@@ -63,7 +63,7 @@ class ParcelController extends Controller
             $notification = Notification::create([
                 'parcel_id' => $parcel->parcel_id,
                 'channel' => 'email',
-                'message' => 'Your package is ready for collection.',
+                'message' => 'Your parcel order has been created successfully. We will communicate with you when it is ready for collection.',
                 'status' => 'pending',
             ]);
 
