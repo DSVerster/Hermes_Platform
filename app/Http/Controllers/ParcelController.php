@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreParcelRequest;
 use App\Http\Requests\UpdateParcelRequest;
+use App\Mail\ParcelCreated;
 use App\Mail\ParcelReadyForCollection;
 use App\Models\Courier;
 use App\Models\Notification;
@@ -17,7 +18,8 @@ class ParcelController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Parcel::with(['courier', 'staff'])->latest('created_at');
+        $query = Parcel::with(['courier', 'staff'])
+            ->latest('created_at');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -69,13 +71,15 @@ class ParcelController extends Controller
 
             try {
                 Mail::to($parcel->recipient_email)
-                    ->send(new ParcelReadyForCollection($parcel));
+                    ->send(new ParcelCreated($parcel));
 
                 $notification->update([
                     'status' => 'sent',
                     'sent_at' => now(),
                 ]);
             } catch (\Throwable $e) {
+                report($e);
+
                 $notification->update([
                     'status' => 'failed',
                 ]);
