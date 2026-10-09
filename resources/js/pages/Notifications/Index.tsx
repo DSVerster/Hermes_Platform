@@ -254,8 +254,17 @@ export default function Index({ title, notifications }: Props) {
                                                 {n.channel === 'email' && n.parcel?.recipient_email && (
                                                     <button
                                                         onClick={() => handleResend(n.notification_id, n.parcel?.recipient_email)}
-                                                        className="flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 transition-colors hover:bg-amber-100"
-                                                        title={`Resend email to ${n.parcel.recipient_email}`}
+                                                        disabled={n.parcel?.status?.toLowerCase() === 'collected'}
+                                                        className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
+                                                            n.parcel?.status?.toLowerCase() === 'collected'
+                                                                ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-60'
+                                                                : 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
+                                                        }`}
+                                                        title={
+                                                            n.parcel?.status?.toLowerCase() === 'collected'
+                                                                ? 'Cannot resend email because this parcel has been collected'
+                                                                : `Resend email to ${n.parcel.recipient_email}`
+                                                        }
                                                     >
                                                         <RefreshCw className="h-3.5 w-3.5" />
                                                         Resend Email
