@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use App\Mail\ParcelCollected;
 use App\Mail\ParcelReadyForCollection;
 use App\Models\Notification;
@@ -181,24 +182,35 @@ class NotificationController extends Controller
                     'sent_at' => now(),
                 ]);
             } catch (\Throwable $e) {
-                /*
-                 * The parcel is still marked as collected,
-                 * but the email notification is recorded
-                 * as failed.
-                 */
-                Notification::create([
-                    'parcel_id' => $parcel->parcel_id,
-                    'channel' => 'email',
-                    'message' => 'Your parcel has been collected. Thank you for doing business with us.',
-                    'status' => 'failed',
-                    'sent_at' => null,
-                ]);
+    /*
+     * Record the actual email error in Laravel's log.
+     */
+    \Illuminate\Support\Facades\Log::error(
+        'Hermes ParcelCollected email failed',
+        [
+            'parcel_id' => $parcel->parcel_id,
+            'recipient_email' => $parcel->recipient_email,
+            'exception' => $e->getMessage(),
+        ]
+    );
 
-                return back()->with(
-                    'error',
-                    'Parcel was marked as collected, but the collection email could not be sent.'
-                );
-            }
+    /*
+     * Record the failed collection email notification.
+     */
+    Notification::create([
+        'parcel_id' => $parcel->parcel_id,
+        'channel' => 'email',
+        'message' => 'Your parcel has been collected. Thank you for doing business with us.',
+        'status' => 'failed',
+        'sent_at' => null,
+    ]);
+
+    return back()->with(
+        'error',
+        'Parcel was marked as collected, but the collection email could not be sent.'
+    );
+}
+
         }
 
         /*
