@@ -33,7 +33,7 @@ export default function Index({ title, couriers }: Props) {
                         <p className="text-gray-500 mt-1">Manage external shipping firms and dispatch handles.</p>
                     </div>
                     <Link href="/couriers/create">
-                        <Button className="bg-gradient-to-r from-[#f5a623] to-[#e85d04] hover:from-[#e09520] hover:to-[#d45404] text-white shadow-lg shadow-orange-500/25">
+                        <Button className="cursor-pointer bg-gradient-to-r from-[#f5a623] to-[#e85d04] hover:from-[#e09520] hover:to-[#d45404] text-white shadow-lg shadow-orange-500/25">
                             <Truck className="h-4 w-4 mr-2" />
                             Add Courier
                         </Button>
@@ -88,7 +88,7 @@ export default function Index({ title, couriers }: Props) {
                                                 {/* Skrap-knoppie */}
                                                 <button 
                                                     onClick={() => handleDelete(c.courier_id, c.name)} 
-                                                    className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-gray-100" 
+                                                    className="cursor-pointer p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-gray-100" 
                                                     title="Delete Courier"
                                                 >
                                                     <Trash2 className="h-4 w-4" />

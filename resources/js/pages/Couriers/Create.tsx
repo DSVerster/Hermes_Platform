@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/layouts/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import InputError from '@/components/input-error';
+import { ArrowLeft } from 'lucide-react';
 
 type Props = { title: string };
 
@@ -27,7 +28,15 @@ export default function Create({ title }: Props) {
         <DashboardLayout title={title}>
             <Head title={title} />
             <div className="mx-auto max-w-2xl space-y-6 p-6">
-                <h1 className="text-2xl font-semibold">{title}</h1>
+                <div className="space-y-6">
+                    <Link href="/couriers">
+                        <Button type="button" variant="outline" size="sm" className="cursor-pointer">
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back to Couriers
+                        </Button>
+                    </Link>
+                    <h1 className="text-2xl font-semibold">{title}</h1>
+                </div>
                 <form onSubmit={submit} className="space-y-4 rounded-xl border p-6">
                     <div className="space-y-1">
                         <Label htmlFor="name">Courier Name</Label>
@@ -63,7 +72,7 @@ export default function Create({ title }: Props) {
                             <InputError message={errors.website} />
                         </div>
                     </div>
-                    <Button type="submit" disabled={processing}>
+                    <Button type="submit" disabled={processing} className="cursor-pointer">
                         Add Courier
                     </Button>
                 </form>
