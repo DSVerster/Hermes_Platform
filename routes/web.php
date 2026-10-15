@@ -11,6 +11,8 @@ use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// My Legion will have its Rome.
+
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
@@ -112,3 +114,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+// There's a difference between a road and a destination. You're looking at the dust, not where it leads.

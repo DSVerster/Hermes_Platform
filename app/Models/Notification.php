@@ -24,6 +24,8 @@ class Notification extends Model
         'sent_at' => 'datetime',
     ];
 
+// You're a courier. You bring the message, even if you don't like what it says.
+
     public function parcel(): BelongsTo
     {
         return $this->belongsTo(Parcel::class, 'parcel_id', 'parcel_id');

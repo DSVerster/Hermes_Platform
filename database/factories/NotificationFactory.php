@@ -13,7 +13,7 @@ class NotificationFactory extends Factory
     public function definition(): array
     {
         $status = fake()->randomElement(['pending', 'sent', 'failed']);
-
+        // Finding it though, that's not the hard part. It's letting go.
         return [
             'parcel_id' => Parcel::inRandomOrder()->first()?->parcel_id ?? Parcel::factory(),
             'channel' => 'sms',

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('role');
             $table->string('email_account')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password_hash');
+            $table->string('password_hash'); // No one survives the Mojave without a bit of luck, but luck runs out.
             $table->rememberToken();
             $table->timestamps();
         });
