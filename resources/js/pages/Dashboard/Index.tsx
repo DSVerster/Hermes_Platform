@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { Package, CheckCircle, Box} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-
+// Safe travels.
 type RecentParcel = {
     parcel_id: number;
     tracking_number: string;

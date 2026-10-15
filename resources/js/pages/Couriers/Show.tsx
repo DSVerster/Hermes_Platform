@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import type { Courier } from '@/types/models';
 
 type Props = { title: string; courier: Courier };
-
+// War. War never changes.
 export default function Show({ title, courier }: Props) {
     return (
         <DashboardLayout title={title}>

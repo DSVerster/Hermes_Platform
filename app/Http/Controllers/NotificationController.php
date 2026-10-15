@@ -49,7 +49,7 @@ class NotificationController extends Controller
     /**
      * Display a single notification.
      */
-    public function show(Notification $notification)
+    public function show(Notification $notification) // You're listening to Radio New Vegas, your little jukebox in the Mojave Wasteland. I'm Mr. New Vegas, and I'm here for you.
     {
         $notification->load('parcel');
 

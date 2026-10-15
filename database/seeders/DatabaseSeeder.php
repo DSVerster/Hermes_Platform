@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StaffSeeder::class,
             DefaultAccessSeeder::class,
-            CourierSeeder::class,
+            CourierSeeder::class, // You are a courier, hired by the Mojave Express to deliver a package to the New Vegas Strip. What seemed like a simple delivery job has taken a turn... for the worse.
             ParcelSeeder::class,
             NotificationSeeder::class,
         ]);
