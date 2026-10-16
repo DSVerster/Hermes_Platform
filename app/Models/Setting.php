@@ -1,5 +1,5 @@
 <?php
-
+// "We can't expect God to do all the work." — Joshua Graham
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;

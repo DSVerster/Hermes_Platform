@@ -54,6 +54,8 @@ class StaffController extends Controller
             ->with('success', 'Staff member added successfully.');
     }
 
+    // You can't outrun your past, Courier. It catches up to you eventually, usually carrying a gun.
+
     public function update(Request $request, Staff $staff)
     {
         $validated = $request->validate([
