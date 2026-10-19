@@ -44,19 +44,25 @@ const statusStyle: Record<string, string> = {
 };
 
 export default function Show({ title, parcel }: Props) {
+    const barcodeRef = React.useRef<HTMLDivElement>(null);
     const handleDownloadBarcode = () => {
-        const svgElement = document.querySelector('#parcel-barcode svg') as SVGSVGElement;
-        if (svgElement) {
-            const svgData = new XMLSerializer().serializeToString(svgElement);
-            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(svgBlob);
-            const link = document.createElement('a');
-            link.download = `Barcode-${parcel.tracking_number}.svg`;
-            link.href = url;
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-    };
+    const svgElement = barcodeRef.current?.querySelector('svg');
+
+    if (!svgElement) {
+        alert('Barcode is not ready yet. Try again.');
+        return;
+    }
+
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    const link = document.createElement('a');
+
+    link.download = `Barcode-${parcel.tracking_number}.svg`;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+};
 
     return (
         <DashboardLayout title={title}>
@@ -74,9 +80,9 @@ export default function Show({ title, parcel }: Props) {
                 {/* Barcode Section */}
                 <section className="rounded-xl border border-gray-200 dark:border-[#2d1b4e] bg-gray-50 dark:bg-[#120b1c] p-6">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="bg-white p-4 rounded-lg">
+                        <div ref={barcodeRef} className="bg-white p-4 rounded-lg">
                             <Barcode
-                                id="parcel-barcode"
+                             
                                 value={parcel.tracking_number}
                                 format="CODE128"
                                 height={80}

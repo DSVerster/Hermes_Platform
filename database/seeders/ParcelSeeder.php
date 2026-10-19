@@ -9,6 +9,6 @@ class ParcelSeeder extends Seeder
 {
     public function run(): void
     {
-        Parcel::factory(80)->create();
+        Parcel::factory(800)->create();
     }
 }

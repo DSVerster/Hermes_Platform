@@ -22,6 +22,7 @@ class UpdateParcelRequest extends FormRequest
             'courier_id'       => ['required', 'exists:couriers,courier_id'],
             'recipient_name'   => ['required', 'string', 'max:255'],
             'recipient_phone'  => ['required', 'string', 'max:50'],
+            'recipient_email'  => ['nullable','email','max:255'],
             'tracking_number'  => [
                 'required',
                 'string',
