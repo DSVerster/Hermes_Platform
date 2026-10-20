@@ -85,14 +85,13 @@ class ParcelController extends Controller
             ->with('success', 'Parcel created successfully.');
     }
 
-    public function show(Parcel $parcel)
-    {
+    public function show(Parcel $parcel){
         $parcel->load(['courier', 'staff', 'notifications']);
-
         return Inertia::render('Parcels/Show', [
-            'parcel' => $parcel,
+        'parcel' => $parcel,
+        'title' => 'Parcel Details',
         ]);
-    }
+  }
 
     public function edit(Parcel $parcel)
     {
